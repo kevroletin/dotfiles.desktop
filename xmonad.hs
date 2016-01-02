@@ -80,7 +80,7 @@ myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
 
 main :: IO ()
 main = do
-    xmproc <- spawnPipe "/usr/bin/xmobar /home/behemoth/.xmonad/.xmobarrc"
+    xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/.xmobarrc"
     xmonad $ defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
                                    <+> manageScratchPad
