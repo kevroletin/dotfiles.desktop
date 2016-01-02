@@ -29,8 +29,9 @@ killOrSpawn name args =
     ifProcessRuns name (safeSpawn "pkill" [name]) (safeSpawn name args)
 
 openInEmacs :: [String] -> X()
-openInEmacs args =
-    ifProcessRuns "emacs" (safeSpawn "emacsclient" args) (safeSpawn "emacs" args)
+openInEmacs args = ifProcessRuns "emacs" viaClient viaEmacs
+    where viaClient = safeSpawn "emacsclient" (["--no-wait"] ++ args)
+          viaEmacs  = safeSpawn "emacs" args
 
 -- Custom key bindings
 keysToAdd :: XConfig l -> [KeyBinding]
