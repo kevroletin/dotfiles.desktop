@@ -19,13 +19,18 @@ import           XMonad.Util.Scratchpad
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
 
+ifProcessRuns :: String -> X() -> X() -> X()
+ifProcessRuns name a b =
+    do out <- runProcessWithInput "pgrep" [name] ""
+       if null out then b else a
+
 killOrSpawn :: String -> [String] -> X()
 killOrSpawn name args =
-    do out <- runProcessWithInput "pgrep" [name] ""
-       if null out then
-           safeSpawn name args
-       else
-           safeSpawn "pkill" [name]
+    ifProcessRuns name (safeSpawn "pkill" [name]) (safeSpawn name args)
+
+openInEmacs :: [String] -> X()
+openInEmacs args =
+    ifProcessRuns "emacs" (safeSpawn "emacsclient" args) (safeSpawn "emacs" args)
 
 -- Custom key bindings
 keysToAdd :: XConfig l -> [KeyBinding]
@@ -50,7 +55,7 @@ keysToAdd x = [
   , (((modMask x .|. shiftMask), xK_m), startSurfing)
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
   , (((modMask x), xK_F2), startSurfing)
-  , (((modMask x), xK_F3), safeSpawn "emacs" ["~/org/gtd.org"])
+  , (((modMask x), xK_F3), openInEmacs ["~/org/gtd.org"])
   , (((modMask x), xK_F4), killOrSpawn "redshift" ["-l", "43:131"])
   ]
   where
