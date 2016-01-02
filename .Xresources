@@ -19,11 +19,9 @@ XTerm*eightBitInput: false
 
 ! urxvt used for scratchpad have different windows class
 ! so define 2 variants: for URxvt and urxvt
-URxvt.faceName: Monospace
-URxvt.faceSize: 12
+URxvt.font: xft:Monospace:size=12
 URxvt.scrollBar: false
-urxvt.faceName: Monospace
-urxvt.faceSize: 12
+urxvt.font: xft:Monospace:size=12
 urxvt.scrollBar: false
 
 !BLK Cursor
