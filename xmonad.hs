@@ -49,7 +49,7 @@ keysToAdd x = [
 
   -- Handle print screen using scrot utility. Resulting pictures are in in ~/Pictures
   , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
-  , ((modMask x, xK_quoteleft), scratchpadSpawnActionTerminal "xterm")
+  , ((modMask x, xK_quoteleft), scratchpadSpawnActionTerminal "urxvt")
   , ((0, xK_Print), spawn "scrot")
 
   -- Shortcuts to open programs
@@ -98,6 +98,7 @@ main = do
                            screenWorkspace 0 >>= flip whenJust (windows . W.view)
                            windows $ W.greedyView "web"
                            return ()
+        , terminal = "urxvt"
         , workspaces = myWorkspaces
         }
     where
@@ -130,5 +131,5 @@ myManageHook = composeAll . concat $
 manageScratchPad :: ManageHook
 manageScratchPad = scratchpadManageHook (W.RationalRect l t w h)
   where
-    (h, w) = (0.3  , 1)
+    (h, w) = (0.4  , 1)
     (t, l) = (1 - h, 1 - w)
