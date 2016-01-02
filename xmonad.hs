@@ -93,11 +93,6 @@ main = do
                         }
         , modMask = mod4Mask
         , keys = myKeys
-        , startupHook = do screenWorkspace 1 >>= flip whenJust (windows . W.view)
-                           windows $ W.greedyView "chat"
-                           screenWorkspace 0 >>= flip whenJust (windows . W.view)
-                           windows $ W.greedyView "web"
-                           return ()
         , terminal = "urxvt"
         , workspaces = myWorkspaces
         }
