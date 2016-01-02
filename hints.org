@@ -1,0 +1,116 @@
+* About
+
+This file contains links and hints to remind how I configured my
+desktop.
+
+* Xmonad
+** quake console
+   Set up using Scratchpad module
+   https://pbrisbin.com/posts/xmonad_scratchpad/. Note that Scratchpad
+   changes window class of terminal (use mod+F1 to check). This means
+   that terminals which use XResources-based configuration should be
+   configured using another name. For example with urxvt scratch and
+   non-scratch versions use URxvt and urxvt names.
+
+** key codes
+http://hackage.haskell.org/package/X11-1.6.0.2/docs/Graphics-X11-Types.html#g:2
+
+* Xsessions
+
+** lightdm
+
+lightdm login manager looks into /usr/share/xsessions/*.desktop
+files. These files contain TryExec and Exec and commands which tells
+which command to execute during session start.
+
+** init files
+
+startx command uses ~/.xinitrc file.
+
+lightdm command executes ~/.xsessionrc file.
+
+** Gnome sessions
+
+Commands like gnome-session --session=gnome are configured by files in
+/usr/share/gnome-session/*.session. Here you can configure which Gnome
+parts are required by you session.
+
+* Fonts, icons
+
+There are programs like gnome-settings-daemon or xsettingsd which
+reads configuration files and somehow changes appearance of other
+X-programs. If you don't run settings daemon then X-server will read
+settings from it's configuration files (some xml files in /etc/
+folder) and pass them to X-programms. xrdb utility changes X-server
+configuration using XResources file. There are also themes for gtk and
+qt programs. Themes for gtk programs are described in ~/.gtkrc-2.0
+file.
+
+1. configure ~/.Xresources file and execute xrdb -merge
+   .Xresources.
+2. use lxappearence utility to configure ~/.gtkrc-2.0 file.
+3. use gconf-editor to configure /desktop/gnome/interface/*-font-name
+
+* Keyboard layout
+
+There are many places which could control your keyboard layout. If you
+don't use settings daemons then setxkbmap and xmodmap will work.
+
+* Locale
+Edit /etc/default/locale. Set either "ru_RU.UTF-8" or "en_US.UTF-8" to
+each field.
+
+* Notifications
+https://github.com/knopwob/dunst
+Configuratin file ~/.config/dunst/dunstrc
+
+* DLNA media server
++ mediatomb
+
+  You can find web-based interface address in logs
+  #+begin_example
+  cat /var/log/mediatomb.log | grep http://192 | tail -n 1 | cut -f 7 -d\
+  #+end_example
+
++ minidlna
+
+  * DLNA media server
+
+* MTP
+Checked several packages:
++ mtp-tools
++ mtpfs
++ jmtpfs
+
+None of them detected my ASUS Phone.
+
+* FTP
++ Install
+  sudo apt-get install vsftpd
+
++ Enable anonymous users in /etc/vsftpd.conf
+  anonymous_enable=Yes
+
++ Change home directory for anonymous user
+  sudo usermod -d /mnt/ ftp
+
+* Hibernate
+sudo -H gedit /etc/systemd/logind.conf
+HandlePowerKey=hibernate
+* autokey
+Fix for exclusion window filter https://groups.google.com/forum/#!topic/autokey-users/ZYrQLPveh4g
+Edit /usr/lib/python2.7/dist-packages/autokey/model.py and remove or from  def _should_trigger_window_title(self, windowInfo):  function
+
+* Terminal and shell
+** Terminal
+1. Install urxvt
+2. Configure color theme
+https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
+
+** Shell
+Most terminals (at least gnome-terminal, urxvt, and XTerm, for
+example) that are started within a desktop environment such as Unity
+will use the SHELL environment variable to select the shell when the
+are launched.
+
+echo "export SHELL=/usr/bin/fish" >> ~/.profile
