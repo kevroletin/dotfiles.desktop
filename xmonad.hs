@@ -11,12 +11,21 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Layout.NoBorders
 import qualified XMonad.StackSet              as W
 import           XMonad.Util.EZConfig         ()
-import           XMonad.Util.Run              (spawnPipe)
+import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
+                                               spawnPipe)
 import           XMonad.Util.Scratchpad
 
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
+
+killOrSpawn :: String -> [String] -> X()
+killOrSpawn name args =
+    do out <- runProcessWithInput "pgrep" [name] ""
+       if null out then
+           safeSpawn name args
+       else
+           safeSpawn "pkill" [name]
 
 -- Custom key bindings
 keysToAdd :: XConfig l -> [KeyBinding]
@@ -36,9 +45,16 @@ keysToAdd x = [
   , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
   , ((modMask x, xK_quoteleft), scratchpadSpawnActionTerminal "xterm")
   , ((0, xK_Print), spawn "scrot")
-  , (((modMask x .|. shiftMask), xK_m), mapM_ spawn ["skype", "firefox", "thunderbird"])
-  , (((modMask x), xK_F1), spawn "xprop >> /tmp/xprop.log")
+
+  -- Shortcuts to open programs
+  , (((modMask x .|. shiftMask), xK_m), startSurfing)
+  , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
+  , (((modMask x), xK_F2), startSurfing)
+  , (((modMask x), xK_F3), safeSpawn "emacs" ["~/org/gtd.org"])
+  , (((modMask x), xK_F4), killOrSpawn "redshift" ["-l", "43:131"])
   ]
+  where
+    startSurfing = mapM_ spawn ["skype", "firefox", "thunderbird"]
 
 -- Unused default key bindings
 keysToRemove :: XConfig l -> [KeyCombination]
