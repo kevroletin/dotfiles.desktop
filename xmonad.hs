@@ -45,7 +45,7 @@ keysToAdd x = [
   ,  (((modMask x .|. controlMask), xK_Return), safeSpawn "emacs" [])
 
   -- Mod + Tab enters "cycle through history" mode. Arrows to switch. Esc - exit.
-  , ((modMask x, xK_Tab), cycleRecentWS [xK_Escape] xK_Left xK_Right)
+  , ((modMask x, xK_Tab), cycleRecentWS [xK_Tab] xK_Left xK_Right)
 
   -- Handle print screen using scrot utility. Resulting pictures are in in ~/Pictures
   , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
