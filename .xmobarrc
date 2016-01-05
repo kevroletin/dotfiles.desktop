@@ -2,8 +2,7 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        , bgColor = "black"
        , fgColor = "grey"
        , position = TopW L 90
-       , commands = [ Run Weather "EGPF" ["-t","World: <tempC>°C","-L","43","-H","131","--normal","green","--high","red","--low","lightblue"] 36000
-                    , Run Cpu ["-w", "2", "-L","3","-H","50","--normal","gray","--high","red"] 10
+       , commands = [ Run Cpu ["-w", "2", "-L","3","-H","50","--normal","gray","--high","red"] 10
                     , Run Memory ["-w", "2", "-t","Mem: <usedratio>%"] 10
                     , Run Swap ["-w", "2", "-t","<usedratio>%"] 10
                     , Run Date "%a %b %_d %l:%M" "date" 10
@@ -11,5 +10,5 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% %memory% - %swap% %EGPF%     <fc=#00ff00>%date%</fc>"
+       , template = "%StdinReader% }{ %cpu% %memory% - %swap% <fc=#7fff00>%date%</fc>"
        }

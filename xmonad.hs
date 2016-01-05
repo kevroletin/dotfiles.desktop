@@ -87,11 +87,13 @@ main = do
                                    <+> myManageHook
         , layoutHook = smartBorders (myLayoutHook) -- Don't put borders on fullFloatWindows
         , logHook = dynamicLogWithPP xmobarPP
-                        { ppOutput = hPutStrLn xmproc
-                        , ppTitle = xmobarColor "green" "" . shorten 50
-                        , ppHidden          = noScratchPad
+                        { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
+                        , ppOutput = hPutStrLn xmproc
+                        , ppTitle = xmobarColor greenColor "" . shorten 50
+                        , ppHidden = noScratchPad
                         }
         , modMask = mod4Mask
+        , focusedBorderColor = redColor
         , keys = myKeys
         , terminal = "urxvt"
         , workspaces = myWorkspaces
@@ -99,6 +101,8 @@ main = do
     where
       myLayoutHook = avoidStruts  $  layoutHook defaultConfig
       noScratchPad ws = if ws == "NSP" then "" else ws
+      redColor = "#Cd2626"
+      greenColor = "#8AE234"
 
 myWorkspaces :: [String]
 myWorkspaces = ["web","work","3","4","5","6","7","mail","chat","temp"]
