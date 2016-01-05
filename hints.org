@@ -15,27 +15,28 @@ desktop.
 ** key codes
 http://hackage.haskell.org/package/X11-1.6.0.2/docs/Graphics-X11-Types.html#g:2
 
-* Xsessions
+* X configuration
+** Xsessions
 
-** lightdm
+*** lightdm
 
 lightdm login manager looks into /usr/share/xsessions/*.desktop
 files. These files contain TryExec and Exec and commands which tells
 which command to execute during session start.
 
-** init files
+*** init files
 
 startx command uses ~/.xinitrc file.
 
 lightdm command executes ~/.xsessionrc file.
 
-** Gnome sessions
+*** Gnome sessions
 
 Commands like gnome-session --session=gnome are configured by files in
 /usr/share/gnome-session/*.session. Here you can configure which Gnome
 parts are required by you session.
 
-* Fonts, icons
+** Fonts, icons
 
 There are programs like gnome-settings-daemon or xsettingsd which
 reads configuration files and somehow changes appearance of other
@@ -51,20 +52,66 @@ file.
 2. use lxappearence utility to configure ~/.gtkrc-2.0 file.
 3. use gconf-editor to configure /desktop/gnome/interface/*-font-name
 
-* Keyboard layout
+*** Firefox
+Install addon Default Zoom Level. Then either in visual config or in
+about:config change it's values.
+
+*** Thunderbird
+
++ Install Themes and Fonts changer.
++ Use Zoom In (\C-=) and Zoom Out (\C--) to adjust reading pane zoom.
+
+** Keyboard layout
 
 There are many places which could control your keyboard layout. If you
 don't use settings daemons then setxkbmap and xmodmap will work.
 
-* Locale
+** Terminal and shell
+*** Terminal
+1. Install urxvt
+2. Configure color theme
+   https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
+3 Install addons
+   http://funloop.org/post/2015-06-25-urxvt-plugins.html
+
+   mkdir ~/.urxvt/ext
+   git clone https://github.com/muennich/urxvt-perls --depth 1 ~/.urxvt/ext
+
+4. Configure addons in ~/.Xresources
+
+*** Shell
+Most terminals (at least gnome-terminal, urxvt, and XTerm, for
+example) that are started within a desktop environment such as Unity
+will use the SHELL environment variable to select the shell when the
+are launched.
+
+echo "export SHELL=/usr/bin/fish" >> ~/.profile
+
+** Clipboard
+There are 3 types of text shared between X-applications: "primary
+selection", "secondary selection" and "clipboard". Use
+xclip -i -selection clipboard
+xclip -o -selection clipboard
+To copy/paste to/from clipboard
+
+* General system config
+** Locale
 Edit /etc/default/locale. Set either "ru_RU.UTF-8" or "en_US.UTF-8" to
 each field.
 
-* Notifications
+** Notifications
 https://github.com/knopwob/dunst
 Configuratin file ~/.config/dunst/dunstrc
 
-* DLNA media server
+** Hibernate
+sudo -H gedit /etc/systemd/logind.conf
+HandlePowerKey=hibernate
+** autokey
+Fix for exclusion window filter https://groups.google.com/forum/#!topic/autokey-users/ZYrQLPveh4g
+Edit /usr/lib/python2.7/dist-packages/autokey/model.py and remove or from  def _should_trigger_window_title(self, windowInfo):  function
+
+* Applications
+** DLNA media server
 + mediatomb
 
   You can find web-based interface address in logs
@@ -76,7 +123,7 @@ Configuratin file ~/.config/dunst/dunstrc
 
   * DLNA media server
 
-* MTP
+** MTP
 Checked several packages:
 + mtp-tools
 + mtpfs
@@ -84,7 +131,7 @@ Checked several packages:
 
 None of them detected my ASUS Phone.
 
-* FTP
+** FTP
 + Install
   sudo apt-get install vsftpd
 
@@ -93,24 +140,3 @@ None of them detected my ASUS Phone.
 
 + Change home directory for anonymous user
   sudo usermod -d /mnt/ ftp
-
-* Hibernate
-sudo -H gedit /etc/systemd/logind.conf
-HandlePowerKey=hibernate
-* autokey
-Fix for exclusion window filter https://groups.google.com/forum/#!topic/autokey-users/ZYrQLPveh4g
-Edit /usr/lib/python2.7/dist-packages/autokey/model.py and remove or from  def _should_trigger_window_title(self, windowInfo):  function
-
-* Terminal and shell
-** Terminal
-1. Install urxvt
-2. Configure color theme
-https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
-
-** Shell
-Most terminals (at least gnome-terminal, urxvt, and XTerm, for
-example) that are started within a desktop environment such as Unity
-will use the SHELL environment variable to select the shell when the
-are launched.
-
-echo "export SHELL=/usr/bin/fish" >> ~/.profile
