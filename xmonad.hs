@@ -42,7 +42,7 @@ keysToAdd x = [
 
   -- Move focused program to right or left workspace
   ,  (((modMask x .|. shiftMask), xK_Left), shiftToPrev)
-  ,  (((modMask x .|. shiftMask), xK_Right), shiftToNext)
+  ,  (((modMask x .|. controlMask), xK_Return), safeSpawn "emacs" [])
 
   -- Mod + Tab enters "cycle through history" mode. Arrows to switch. Esc - exit.
   , ((modMask x, xK_Tab), cycleRecentWS [xK_Escape] xK_Left xK_Right)
