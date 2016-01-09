@@ -5,6 +5,7 @@ import           System.IO
 import           XMonad
 import           XMonad.Actions.CycleRecentWS
 import           XMonad.Actions.CycleWS
+import           XMonad.Actions.UpdatePointer
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
@@ -14,7 +15,6 @@ import           XMonad.Util.EZConfig         ()
 import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
                                                spawnPipe)
 import           XMonad.Util.Scratchpad
-
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
@@ -92,8 +92,10 @@ main = do
                         , ppTitle = xmobarColor greenColor "" . shorten 50
                         , ppHidden = noScratchPad
                         }
+                    >> updatePointer (Relative 0.5 0.5)
         , modMask = mod4Mask
         , focusedBorderColor = redColor
+        , focusFollowsMouse = False
         , keys = myKeys
         , terminal = "urxvt"
         , workspaces = myWorkspaces
