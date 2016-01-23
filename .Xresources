@@ -5,7 +5,11 @@
 Xft.antialias:  true
 Xft.rgba:       rgb
 Xft.hinting:    true
-Xft.hintstyle:  hintmedium
+Xft.autohint:   0
+Xft.hintstyle:  hintslight
+! http://www.lagom.nl/lcd-test/subpixel.php  to check
+Xft.rgba:       rgb
+Xft.lcdfilter:  lcddefault
 
 !from https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
 XTerm*faceName: Monospace
@@ -25,37 +29,47 @@ urxvt.font: xft:Monospace:size=12
 urxvt.scrollBar: false
 
 !BLK Cursor
+! Black (not tango) + DarkGrey
 #define _color0        #000d18
-#define _color8        #000d18
+#define _color8       #555753
+
+! DarkRed + Red
 !RED Tag
 #define _color1        #e89393
 #define _color9        #e89393
+! DarkGreen + Green
 !GRN SpecialKey
 #define _color2        #9ece9e
 #define _color10       #9ece9e
+! DarkYellow + Yellow
 !YEL Keyword
 #define _color3        #f0dfaf
 #define _color11       #f0dfaf
+! DarkBlue + Blue
 !BLU Number
 #define _color4        #8cd0d3
 #define _color12       #8cd0d3
+! DarkMagenta + Magenta
 !MAG Precondit
 #define _color5        #c0bed1
 #define _color13       #c0bed1
+!DarkCyan + Cyan (both not tango)
 !CYN Float
 #define _color6        #dfaf8f
 #define _color14       #dfaf8f
+! LightGrey + White
 !WHT Search
 #define _color7        #efefef
 #define _color15       #efefef
 !FMT Include, StatusLine, ErrorMsg
 #define _colorBD       #ffcfaf
-#define _colorUL       #ccdc90
-#define _colorIT       #80d4aa
+#define _colorUL       _color4
+#define _colorIT       #e89393
 !TXT Normal, Normal, Cursor
 #define _foreground    #c5c8c6
 #define _background    #1d1f21
 #define _cursorColor   #8faf9f
+
 URxvt*color0         : _color0
 URxvt*color1         : _color1
 URxvt*color2         : _color2
@@ -122,6 +136,26 @@ XTerm*colorUL        : _colorUL
 XTerm*foreground     : _foreground
 XTerm*background     : _background
 XTerm*cursorColor    : _cursorColor
+
+*color0         : _color0
+*color1         : _color1
+*color2         : _color2
+*color3         : _color3
+*color4         : _color4
+*color5         : _color5
+*color6         : _color6
+*color7         : _color7
+*color8         : _color8
+*color9         : _color9
+*color10        : _color10
+*color11        : _color11
+*color12        : _color12
+*color13        : _color13
+*color14        : _color14
+*color15        : _color15
+*colorBD        : _colorBD
+*colorIT        : _colorIT
+*colorUL        : _colorUL
 
 ! Enable Urxvt addons
 
