@@ -49,8 +49,31 @@ file.
 
 1. configure ~/.Xresources file and execute xrdb -merge
    .Xresources.
-2. use lxappearence utility to configure ~/.gtkrc-2.0 file.
-3. use gconf-editor to configure /desktop/gnome/interface/*-font-name
+
+There are directory which contains system fonts settings /etc/fonts/conf.d/
+
+#+begin_example
+cd /etc/fonts/conf.d
+sudo ln -s ../conf.avail/10-sub-pixel-rgb.conf .
+#+end_example
+
+*** Gtk
+1. use lxappearence utility to configure ~/.gtkrc-2.0 file.
+2. use gconf-editor to configure /desktop/gnome/interface/*-font-name
+
+*** Qt
+
+1. [[https://wiki.archlinux.org/index.php/Uniform_look_for_Qt_and_GTK_applications][Arch Wiki]]
+  #+begin_example
+  ~/.config/Trolltech.conf
+
+  ...
+  [Qt]
+  style=GTK+
+  ...
+  #+end_example
+
+  Or use qtconfig-qt4 utility from qt4-qtconfig package.
 
 *** Firefox
 Install addon Default Zoom Level. Then either in visual config or in
@@ -79,13 +102,38 @@ don't use settings daemons then setxkbmap and xmodmap will work.
 
 4. Configure addons in ~/.Xresources
 
+5. Configure colors
+
+   Bonus: [[https://github.com/chriskempson/base16][base16]] - set of 16-color schemes for text editors and
+   terminal emulators.
+
+   [[http://www.xcolors.net/][A lot of X themes]]
+
+   [[https://wiki.archlinux.org/index.php/X_resources#Terminal_colors][Here]] is description of *color0..15 meaning.
+
 *** Shell
 Most terminals (at least gnome-terminal, urxvt, and XTerm, for
 example) that are started within a desktop environment such as Unity
 will use the SHELL environment variable to select the shell when the
 are launched.
 
+**** Install fish shell
+#+begin_example
 echo "export SHELL=/usr/bin/fish" >> ~/.profile
+chsh -s $(grep /fish$ /etc/shells | tail -1)
+#+end_example
+
+**** Install zsh (didn't migrated to zsh yet)
+
+#+begin_example
+sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+git clone git://github.com/tarruda/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone git://github.com/tarruda/zsh-autosuggestions zsh-autosuggestions
+#+end_example
+
+edit ~/.zshrc
+plugins=(git emacs zsh-syntax-highlighting zsh-autosuggestions)
+
 
 ** Clipboard
 There are 3 types of text shared between X-applications: "primary
@@ -140,3 +188,11 @@ None of them detected my ASUS Phone.
 
 + Change home directory for anonymous user
   sudo usermod -d /mnt/ ftp
+** Human language translators and dictionaries
+*** dict
+
+[[http://askubuntu.com/questions/380847/is-it-possible-to-translate-words-via-terminal][Stack Overflow post]]
+#+begin_example
+sudo apt-get install dictd
+sudo apt-get install dict-freedict-eng-rus
+#+end_example
