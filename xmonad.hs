@@ -58,6 +58,9 @@ keysToAdd x = [
   , (((modMask x), xK_F2), startSurfing)
   , (((modMask x), xK_F3), openInEmacs ["~/org/gtd.org"])
   , (((modMask x), xK_F4), killOrSpawn "redshift" ["-l", "43:131"])
+
+  -- Toggle xmobar
+  , ((modMask x, xK_b), sendMessage ToggleStruts)
   ]
   where
     startSurfing = mapM_ spawn ["skype", "firefox", "thunderbird"]
@@ -85,7 +88,7 @@ main = do
         { manageHook = manageDocks <+> manageHook defaultConfig
                                    <+> manageScratchPad
                                    <+> myManageHook
-        , layoutHook = smartBorders (myLayoutHook) -- Don't put borders on fullFloatWindows
+        , layoutHook = myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
                         { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
                         , ppOutput = hPutStrLn xmproc
@@ -101,7 +104,9 @@ main = do
         , workspaces = myWorkspaces
         }
     where
-      myLayoutHook = avoidStruts  $  layoutHook defaultConfig
+      myLayoutHook = smartBorders  -- Don't put borders on fullFloatWindows
+                     $ avoidStruts -- Prevent overlapping with docks (panels)
+                     $ layoutHook defaultConfig
       noScratchPad ws = if ws == "NSP" then "" else ws
       redColor = "#Cd2626"
       greenColor = "#8AE234"
