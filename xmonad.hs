@@ -9,6 +9,7 @@ import           XMonad.Actions.UpdatePointer
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
+import           XMonad.Layout.Maximize
 import           XMonad.Layout.NoBorders
 import qualified XMonad.StackSet              as W
 import           XMonad.Util.EZConfig         ()
@@ -61,8 +62,18 @@ keysToAdd x = [
 
   -- Toggle xmobar
   , ((modMask x, xK_b), sendMessage ToggleStruts)
-  ]
+  -- Float and enlarge selected window
+  , ((modMask x, xK_f), withFocused (sendMessage . maximizeRestore))
+
+  -- resizing the master/slave ratio
+  , ((modm, xK_comma), sendMessage Shrink)
+  , ((modm, xK_period), sendMessage Expand)
+
+  , ((modm, xK_bracketleft), sendMessage (IncMasterN (-1)))
+  , ((modm, xK_bracketright), sendMessage (IncMasterN 1))
+     ]
   where
+    modm = (modMask x)
     startSurfing = mapM_ spawn ["skype", "firefox", "thunderbird"]
 
 -- Unused default key bindings
@@ -70,11 +81,17 @@ keysToRemove :: XConfig l -> [KeyCombination]
 keysToRemove x = [
   -- Xmobar is used as programs launcher
     (modMask x .|. shiftMask, xK_p)
-
   -- This one used for history cycle
   , (modMask x, xK_Tab)
+  -- These are remapped to < and >
+  , (modm, xK_h)
+  , (modm, xK_l)
+  -- "<" and ">" are bound to shrink/expand master area
+  , (modm, xK_comma)
+  , (modm, xK_period)
   ]
-
+  where
+    modm = (modMask x)
 -- Modify default key bindings scheme
 myKeys :: XConfig Layout -> M.Map (KeyCombination) (X ())
 myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
@@ -104,8 +121,9 @@ main = do
         , workspaces = myWorkspaces
         }
     where
-      myLayoutHook = smartBorders  -- Don't put borders on fullFloatWindows
-                     $ avoidStruts -- Prevent overlapping with docks (panels)
+      myLayoutHook = maximize           -- M-f to temporary maximize windows
+                     $ smartBorders     -- Don't put borders on fullFloatWindows
+                     $ avoidStruts      -- Prevent overlapping with docks (panels)
                      $ layoutHook defaultConfig
       noScratchPad ws = if ws == "NSP" then "" else ws
       redColor = "#Cd2626"
