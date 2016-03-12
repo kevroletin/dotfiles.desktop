@@ -123,17 +123,18 @@ echo "export SHELL=/usr/bin/fish" >> ~/.profile
 chsh -s $(grep /fish$ /etc/shells | tail -1)
 #+end_example
 
-**** Install zsh (didn't migrated to zsh yet)
+**** Or better install zsh
 
-#+begin_example
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-git clone git://github.com/tarruda/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone git://github.com/tarruda/zsh-autosuggestions zsh-autosuggestions
-#+end_example
+Easy way: use popular oh-my-zsh config
 
-edit ~/.zshrc
-plugins=(git emacs zsh-syntax-highlighting zsh-autosuggestions)
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
+**** Install fzf fuzzy matcher
+
+(Note: install fzf after zsh or edit ~/.zshrc by hands)
+
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
 
 ** Clipboard
 There are 3 types of text shared between X-applications: "primary
@@ -141,6 +142,21 @@ selection", "secondary selection" and "clipboard". Use
 xclip -i -selection clipboard
 xclip -o -selection clipboard
 To copy/paste to/from clipboard
+** Bind extra keys on mouse
+xinput -list
+xinput -test 10
+
+Original keys meaning:
+<left> <middle> <right> <s-up> <s-down> ? ? <forward> <backward>
+Change <backward> to right in order to replace broken <right> button
+
+xinput set-button-map "Logitech Unifying Device. Wireless PID:1028" 1 2 3 4 5 6 7 3 9
+xinput --set-prop "Logitech Unifying Device. Wireless PID:1028" "Evdev Wheel Emulation" 1
+xinput --set-prop "Logitech Unifying Device. Wireless PID:1028" "Evdev Wheel Emulation Button" 8
+
+*** Tried tools which didn't help
+ + xdotool - generates event only from virtual pointing device
+ + easystroke - just didn't work
 
 * General system config
 ** Locale
@@ -157,7 +173,7 @@ HandlePowerKey=hibernate
 ** autokey
 Fix for exclusion window filter https://groups.google.com/forum/#!topic/autokey-users/ZYrQLPveh4g
 Edit /usr/lib/python2.7/dist-packages/autokey/model.py and remove or from  def _should_trigger_window_title(self, windowInfo):  function
-
+** TODO: check xautomation utility to replace autokey
 * Applications
 ** DLNA media server
 + mediatomb
@@ -188,7 +204,27 @@ None of them detected my ASUS Phone.
 
 + Change home directory for anonymous user
   sudo usermod -d /mnt/ ftp
-** Human language translators and dictionaries
+
+** Windows share
++ Install server and client
+  sudo apt-get install samba smbclient
+
++ Configure
+  sudo smbpasswd -a <user_name>
+  sudo vi /etc/samba/smb.conf
+
+  <    wins support = yes
+
+  < [share]
+  < path = /mnt/ex3
+  < guest ok = yes
+  < read only = yes
+
+  Also configure home router to point just configured WINS server.
+
++ Test
+  smbclient -L localhost
+** Translators and dictionaries
 *** dict
 
 [[http://askubuntu.com/questions/380847/is-it-possible-to-translate-words-via-terminal][Stack Overflow post]]
@@ -196,3 +232,17 @@ None of them detected my ASUS Phone.
 sudo apt-get install dictd
 sudo apt-get install dict-freedict-eng-rus
 #+end_example
+** File manager
+[[https://github.com/hut/ranger/wiki/Official-user-guide][Ranger]] is ineresting alternative to mc. It uses vim-like key bindings and single
+panel (but allows tabs).
+1. Initialize config files: ranger --copy-config=all
+2. Edit ~/.config/ranger/rifle.conf and add emacs client as default editor:
+   mime ^text,  label emacs = "emacsclient" -n "$@".
+3. Implement ranger-cd function for your shell ([[https://gist.github.com/dbohdan/6257642][zsh version]])
+** Misc
+*** Documents
++ pdf :: xpdf is faster than evince so use it for large documents
++ djvu :: djview
+*** Rust
+Local installation without sudo ([[https://mpuppe.de/blog/2014/11/26/installing-rust-nightly-builds-into-your-home-directory/][from blogpost]]):
+curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --prefix=$HOME/.local --disable-sudo
