@@ -58,7 +58,7 @@ keysToAdd x = [
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
   , (((modMask x), xK_F2), startSurfing)
   , (((modMask x), xK_F3), openInEmacs ["~/org/gtd.org"])
-  , (((modMask x), xK_F4), killOrSpawn "redshift" ["-l", "43:131"])
+  , (((modMask x), xK_F4), killOrSpawn "redshift" [])
 
   -- Toggle xmobar
   , ((modMask x, xK_b), sendMessage ToggleStruts)
@@ -117,7 +117,7 @@ main = do
         , focusedBorderColor = redColor
         , focusFollowsMouse = False
         , keys = myKeys
-        , terminal = "urxvt"
+        , terminal = "urxvt -name URxvt"
         , workspaces = myWorkspaces
         }
     where
