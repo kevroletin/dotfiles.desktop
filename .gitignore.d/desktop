@@ -1,0 +1,16 @@
+*
+!/.config
+!/.config/dunst
+!/.config/dunst/dunstrc
+!/.config/redshift.conf
+!/.gitignore.d
+!/.gitignore.d/desktop
+!/ranger
+!/ranger/rc.conf
+!/ranger/rifle.conf
+!/.xmobarrc
+!/.xmonad
+!/.xmonad/hints.org
+!/.xmonad/xmonad.hs
+!/.xmonad/.xsessionrc
+!/.Xresources
