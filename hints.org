@@ -94,11 +94,13 @@ don't use settings daemons then setxkbmap and xmodmap will work.
 1. Install urxvt
 2. Configure color theme
    https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
-3 Install addons
+3. Install addons
    http://funloop.org/post/2015-06-25-urxvt-plugins.html
 
    mkdir ~/.urxvt/ext
    git clone https://github.com/muennich/urxvt-perls --depth 1 ~/.urxvt/ext
+   cd ~/.urxvt/ext
+   wget wget https://raw.githubusercontent.com/majutsushi/urxvt-font-size/master/font-size
 
 4. Configure addons in ~/.Xresources
 
@@ -110,6 +112,37 @@ don't use settings daemons then setxkbmap and xmodmap will work.
    [[http://www.xcolors.net/][A lot of X themes]]
 
    [[https://wiki.archlinux.org/index.php/X_resources#Terminal_colors][Here]] is description of *color0..15 meaning.
+
+6. tmux
+   use https://github.com/tmux-plugins/tpm as plugins manager
+
+*** Terminal color scheme
+
+**** Base 16 themes:
+Base 16 defines colors 00-07 as background gradations. The problem is that shell
+commands expect colors 00-07 to be same as 08-0f. There are two ways to fix:
++ switch to some other theme like smyck
++ source corresponding shell script from base16 theme (it emphasized using face
+  boldness instead of lighter colors).
+
+Hint: how to choose exact theme?
+1. tmux -2 new -s test # open many different terminal apps in tmux session
+2. git clone --depth 1 https://github.com/chriskempson/base16-shell.git
+   for i in ~/base16-xresources/base16-*.(dark|light).xresources; do
+       echo "#include \"$i\"" >> ~/.Xresources
+       xrdb ~/.Xresources; echo $i
+       echo $i
+       urxvt -name URxvt
+   done
+3. tmux attach -t test
+
+   mkdir -p ~/.vim/colors
+   cd ~/.vim/colors
+   git clone git://github.com/chriskempson/base16-vim.git base16
+   cp base16/colors/*.vim .
+
+   echo "set background=dark" >> ~/.vimrc
+   echo "colorscheme base16-default" >> ~/.vimrc
 
 *** Shell
 Most terminals (at least gnome-terminal, urxvt, and XTerm, for
@@ -224,6 +257,15 @@ None of them detected my ASUS Phone.
 
 + Test
   smbclient -L localhost
+** DHCP server
+Configured dhcp server to server on single interface. [[https://help.ubuntu.com/community/isc-dhcp-server#dhcp3-server_and_multiple_interfaces][Ubuntu Wiki]] contains good
+description. In short:
++ sudo apt-get install dhcp3-server
++ configure static IP for interface via Network Manager applet;
++ list interface in /etc/default/isc-dhcp-server
++ define automatic IP ranger in /etc/dhcp/dhcpd.conf
++ logs are in /var/log/syslog and /var/log/upstart/isc-dhcp-server.log
++ sudo service isc-dhcp-server start
 ** Translators and dictionaries
 *** dict
 

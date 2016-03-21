@@ -1,179 +1,63 @@
+#include "base16-xresources/base16-default.dark.xresources"
+
 ! Enable antialiasing and hinting
 ! https://wiki.archlinux.org/index.php/X_resources#Xft_resources
 ! Xft settings ---------------------------------------------------------------
 !Xft.dpi:        96
-Xft.antialias:  true
-Xft.hinting:    true
-Xft.autohint:   0
-Xft.hintstyle:  hintslight
+*.antialias:  true
+*.hinting:    true
+*.autohint:   0
+*.hintstyle:  hintslight
 ! http://www.lagom.nl/lcd-test/subpixel.php  to check
-Xft.rgba:       rgb
-Xft.lcdfilter:  lcddefault
+*.rgba:       rgb
+*.lcdfilter:  lcddefault
 
-XTerm*faceName: UbuntuMono
-!from https://wiki.mpich.org/mpich/index.php/Configure_xterm_Fonts_and_Colors_for_Your_Eyeball
-XTerm*faceSize: 12
-XTerm*vt100*geometry: 80x60
-XTerm*saveLines: 16384
-XTerm*loginShell: true
-XTerm*charClass: 33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48
-XTerm*termName: xterm-color
-XTerm*eightBitInput: false
-
-! urxvt used for scratchpad have different windows class
-! so define 2 variants: for URxvt and urxvt
-URxvt.font: xft:Monospace:size=12
+! urxvt used for scratchpad have different windows class (scratchpad, URxvt) all
+! other urxvt windows are (urxvt, URxvt). For some reason non-scratchpad version
+! doesnt accept several parameters using URxvt or * name. So duplicate urxvt for
+! several parameters.
+! urxvt.font: xft:UbuntuMono:size=14
+URxvt.font: xft:UbuntuMono:size=14
+! urxvt.scrollBar: false
 URxvt.scrollBar: false
-urxvt.font: xft:Monospace:size=12
-urxvt.scrollBar: false
 
-!BLK Cursor
-! Black (not tango) + DarkGrey
-#define _color0        #000d18
-#define _color8       #555753
-
-! DarkRed + Red
-!RED Tag
-#define _color1        #e89393
-#define _color9        #e89393
-! DarkGreen + Green
-!GRN SpecialKey
-#define _color2        #9ece9e
-#define _color10       #9ece9e
-! DarkYellow + Yellow
-!YEL Keyword
-#define _color3        #f0dfaf
-#define _color11       #f0dfaf
-! DarkBlue + Blue
-!BLU Number
-#define _color4        #8cd0d3
-#define _color12       #8cd0d3
-! DarkMagenta + Magenta
-!MAG Precondit
-#define _color5        #c0bed1
-#define _color13       #c0bed1
-!DarkCyan + Cyan (both not tango)
-!CYN Float
-#define _color6        #dfaf8f
-#define _color14       #dfaf8f
-! LightGrey + White
-!WHT Search
-#define _color7        #efefef
-#define _color15       #efefef
-!FMT Include, StatusLine, ErrorMsg
-#define _colorBD       #ffcfaf
-#define _colorUL       _color4
-#define _colorIT       #e89393
-!TXT Normal, Normal, Cursor
-#define _foreground    #c5c8c6
-#define _background    #1d1f21
-#define _cursorColor   #8faf9f
-
-URxvt*color0         : _color0
-URxvt*color1         : _color1
-URxvt*color2         : _color2
-URxvt*color3         : _color3
-URxvt*color4         : _color4
-URxvt*color5         : _color5
-URxvt*color6         : _color6
-URxvt*color7         : _color7
-URxvt*color8         : _color8
-URxvt*color9         : _color9
-URxvt*color10        : _color10
-URxvt*color11        : _color11
-URxvt*color12        : _color12
-URxvt*color13        : _color13
-URxvt*color14        : _color14
-URxvt*color15        : _color15
-URxvt*colorBD        : _colorBD
-URxvt*colorIT        : _colorIT
-URxvt*colorUL        : _colorUL
-URxvt*foreground     : _foreground
-URxvt*background     : _background
-URxvt*cursorColor    : _cursorColor
-urxvt*color0         : _color0
-urxvt*color1         : _color1
-urxvt*color2         : _color2
-urxvt*color3         : _color3
-urxvt*color4         : _color4
-urxvt*color5         : _color5
-urxvt*color6         : _color6
-urxvt*color7         : _color7
-urxvt*color8         : _color8
-urxvt*color9         : _color9
-urxvt*color10        : _color10
-urxvt*color11        : _color11
-urxvt*color12        : _color12
-urxvt*color13        : _color13
-urxvt*color14        : _color14
-urxvt*color15        : _color15
-urxvt*colorBD        : _colorBD
-urxvt*colorIT        : _colorIT
-urxvt*colorUL        : _colorUL
-urxvt*foreground     : _foreground
-urxvt*background     : _background
-urxvt*cursorColor    : _cursorColor
-XTerm*color0         : _color0
-XTerm*color1         : _color1
-XTerm*color2         : _color2
-XTerm*color3         : _color3
-XTerm*color4         : _color4
-XTerm*color5         : _color5
-XTerm*color6         : _color6
-XTerm*color7         : _color7
-XTerm*color8         : _color8
-XTerm*color9         : _color9
-XTerm*color10        : _color10
-XTerm*color11        : _color11
-XTerm*color12        : _color12
-XTerm*color13        : _color13
-XTerm*color14        : _color14
-XTerm*color15        : _color15
-XTerm*colorBD        : _colorBD
-XTerm*colorIT        : _colorIT
-XTerm*colorUL        : _colorUL
-XTerm*foreground     : _foreground
-XTerm*background     : _background
-XTerm*cursorColor    : _cursorColor
-
-*color0         : _color0
-*color1         : _color1
-*color2         : _color2
-*color3         : _color3
-*color4         : _color4
-*color5         : _color5
-*color6         : _color6
-*color7         : _color7
-*color8         : _color8
-*color9         : _color9
-*color10        : _color10
-*color11        : _color11
-*color12        : _color12
-*color13        : _color13
-*color14        : _color14
-*color15        : _color15
-*colorBD        : _colorBD
-*colorIT        : _colorIT
-*colorUL        : _colorUL
+! for some reason non-scratchpad urxvt doesnt read default settings listed
+! below
+! urxvt*background:            S_base03
+! urxvt*foreground:            S_base00
+! urxvt*fading:                40
+! urxvt*fadeColor:             S_base03
+! urxvt*cursorColor:           S_base1
+! urxvt*pointerColorBackground:S_base01
+! urxvt*pointerColorForeground:S_base1
 
 ! Enable Urxvt addons
+!
+! Inspired by http://funloop.org/post/2015-06-25-urxvt-plugins.html.
+! Provides
+! good user expierence if interactive shell is configured to copy killed text to
+! clipboard
+URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard,font-size
 
-URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard,
-
-URxvt.keysym.M-Return: perl:keyboard-select:activate
+URxvt.keysym.M-Insert: perl:keyboard-select:activate
 URxvt.keysym.M-r: perl:keyboard-select:search
-URxvt.keysym.M-u: perl:url-select:select_next
+URxvt.keysym.C-M-p: perl:url-select:select_next
 URxvt.url-select.button: 1
+! automacitally copy mouse selection
 URxvt.clipboard.autocopy: true
 URxvt.clipboard.copycmd:  xclip -i -selection clipboard
 URxvt.clipboard.pastecmd: xclip -o -selection clipboard
 URxvt.keysym.C-Insert: perl:clipboard:copy
-URxvt.keysym.C-v: perl:clipboard:paste
 URxvt.keysym.S-Insert: perl:clipboard:paste
+URxvt.keysym.C-v: perl:clipboard:paste
 URxvt.keysym.C-S-v: perl:clipboard:paste_escaped
+! `font-size` plugin
+URxvt.keysym.C-minus: perl:font-size:decrease
+URxvt.keysym.C-equal: perl:font-size:increase
+URxvt.font-size.step: 4
 
-emacs.background: #1d1f21
-emacs.foreground: #c5c8c6
+emacs.background: base00
+emacs.foreground: base05
 emacs.menuBar: off
 emacs.toolBar: off
 emacs.verticalScrollBars: off
