@@ -1,4 +1,4 @@
-#include "base16-xresources/base16-default.dark.xresources"
+#include ".base16-xresources/base16-default.dark.xresources"
 
 ! Enable antialiasing and hinting
 ! https://wiki.archlinux.org/index.php/X_resources#Xft_resources
@@ -37,7 +37,7 @@ URxvt.scrollBar: false
 ! Provides
 ! good user expierence if interactive shell is configured to copy killed text to
 ! clipboard
-URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard,font-size
+URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard
 
 URxvt.keysym.M-Insert: perl:keyboard-select:activate
 URxvt.keysym.M-r: perl:keyboard-select:search
