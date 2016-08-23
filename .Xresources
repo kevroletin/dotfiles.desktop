@@ -1,4 +1,4 @@
-#include ".base16-xresources/base16-default.dark.xresources"
+#include ".base16-xresources/Xresources/base16-default-dark.xresources"
 
 ! Enable antialiasing and hinting
 ! https://wiki.archlinux.org/index.php/X_resources#Xft_resources
