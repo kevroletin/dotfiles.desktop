@@ -1,4 +1,4 @@
-#include ".base16-xresources/Xresources/base16-default-dark.xresources"
+#include ".base16-xresources/xresources/base16-default-dark-256.Xresources"
 
 ! Enable antialiasing and hinting
 ! https://wiki.archlinux.org/index.php/X_resources#Xft_resources
@@ -18,6 +18,13 @@
 ! several parameters.
 ! urxvt.font: xft:UbuntuMono:size=14
 URxvt.font: xft:UbuntuMono:size=14
+XTerm*faceName: UbuntuMono
+XTerm*faceSize: UbuntuMono
+XTerm*metaSendsEscape: true
+xterm*faceName: UbuntuMono
+xterm*faceSize: UbuntuMono
+xterm*metaSendsEscape: true
+
 ! urxvt.scrollBar: false
 URxvt.scrollBar: false
 
