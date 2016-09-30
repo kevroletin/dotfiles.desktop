@@ -304,3 +304,27 @@ and then just ~ssh tokio~ or ~git clone tokio:repo~
 *** configure server
 
 http://planzero.org/blog/2012/10/24/hosting_an_admin-friendly_git_server_with_git-shell
+** Emacs
+*** Agenda via email
++ We send mail using sendmail
+  http://tecadmin.net/send-email-from-gmail-smtp-via-linux-command/
++ Obtain password for app from google
+  https://security.google.com/settings/security/apppasswords?pli=1
++ Configure cron task like this
+  https://help.ubuntu.com/community/CronHowto
++ Use batch mode agenda
+  http://orgmode.org/manual/Extracting-agenda-information.html
+
+#+begin_example
+emacs -batch --eval "(require 'org)"                             \
+      -l ~/.spacemacs.d/user-config/literate-configs/org-mode.el \
+      --eval '(org-batch-agenda "a")' |                          \
+                                     \
+sendemail -f "kevroletin@gmail.com"  \
+          -u "Dayly agenda"          \
+          -t "kevroletin@gmail.com"  \
+          -s "smtp.gmail.com:587"    \
+          -o tls=yes                 \
+          -xu "kevroletin@gmail.com" \
+          -xp "password_here"
+#+end_exaple
