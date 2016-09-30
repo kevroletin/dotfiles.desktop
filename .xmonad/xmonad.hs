@@ -112,7 +112,7 @@ main = do
                         , ppTitle = xmobarColor greenColor "" . shorten 50
                         , ppHidden = noScratchPad
                         }
-                    >> updatePointer (Relative 0.5 0.5)
+                    >> updatePointer (0.5, 0.5) (0, 0)
         , modMask = mod4Mask
         , focusedBorderColor = redColor
         , focusFollowsMouse = False
