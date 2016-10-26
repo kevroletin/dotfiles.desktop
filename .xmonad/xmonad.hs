@@ -120,6 +120,9 @@ main = do
         , focusFollowsMouse = False
         , keys = myKeys
         , terminal = "urxvt -name URxvt"
+        , startupHook = do openEmacsAgenda
+                           windows $ W.greedyView "work"
+                           mapM_ spawn ["firefox", "thunderbird"]
         , workspaces = myWorkspaces
         }
     where
