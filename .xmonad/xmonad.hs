@@ -140,23 +140,18 @@ myWorkspaces = ["web","work","3","4","5","6","7","mail","chat","temp"]
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
     [
-        [ className =? b --> viewShift "web"      | b <- myClassWebShifts  ]
+        [ className =? b --> doF (W.shift "web")  | b <- myClassWebShifts  ]
       , [ resource  =? c --> doF (W.shift "mail") | c <- myClassMailShifts ]
       , [ resource  =? c --> doF (W.shift "chat") | c <- myClassChatShifts ]
       , [ className =? i --> doFloat | i <- myClassFloats ]
-      -- Allows focusing other monitors without killing the fullscreen
       , [ isFullscreen --> (doF W.focusDown <+> doFullFloat) ]
-      -- Single monitor setups, or if the previous hook doesn't work
-      -- , [ isFullscreen --> doFullFloat ]
     ]
     where
-        viewShift = doF . liftM2 (.) W.greedyView W.shift
         myClassWebShifts  = ["Navigator", "Firefox"]
         myClassMailShifts = ["Mail", "Thunderbird"]
         myClassChatShifts = ["Pidgin", "skype"]
-        myClassFloats = ["mplayer", "Gimp"]
+        myClassFloats = ["Gimp"]
 
--- then define your scratchpad management separately:
 manageScratchPad :: ManageHook
 manageScratchPad = scratchpadManageHook (W.RationalRect l t w h)
   where
