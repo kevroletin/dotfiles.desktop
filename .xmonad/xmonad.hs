@@ -34,6 +34,8 @@ openInEmacs args = ifProcessRuns "emacs" viaClient viaEmacs
     where viaClient = safeSpawn "emacsclient" (["--no-wait"] ++ args)
           viaEmacs  = safeSpawn "emacs" args
 
+openEmacsAgenda = openInEmacs ["--eval", "(find-file \"~/org/personal/gtd.org\")", "--eval", "(org-agenda-list)"]
+
 -- Custom key bindings
 keysToAdd :: XConfig l -> [KeyBinding]
 keysToAdd x = [
@@ -57,7 +59,7 @@ keysToAdd x = [
   , (((modMask x .|. shiftMask), xK_m), startSurfing)
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
   , (((modMask x), xK_F2), startSurfing)
-  , (((modMask x), xK_F3), openInEmacs ["~/org/gtd.org"])
+  , (((modMask x), xK_F3), openEmacsAgenda)
   , (((modMask x), xK_F4), killOrSpawn "redshift" [])
 
   -- Toggle xmobar
