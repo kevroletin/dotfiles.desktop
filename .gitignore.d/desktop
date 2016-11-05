@@ -1,4 +1,6 @@
 *
+!/bootstrap.d
+!/bootstrap.d/desktop.sh
 !/.config
 !/.config/dunst
 !/.config/dunst/dunstrc
