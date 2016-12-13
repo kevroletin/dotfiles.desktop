@@ -1,4 +1,4 @@
-[$HOME/.config/vcsh/repo.d/desktop.git]
+[$HOME/.config/vcsh/repo.d/dotfiles.desktop.git]
 checkout = vcsh clone git@github.com:kevroletin/dotfiles.desktop.git desktop || vcsh clone https://github.com/kevroletin/dotfiles.desktop.git desktop
 
 [$HOME/.base16-xresources]
