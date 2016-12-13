@@ -1,0 +1,6 @@
+[$HOME/.config/vcsh/repo.d/desktop.git]
+checkout = vcsh clone git@github.com:kevroletin/dotfiles.desktop.git desktop || vcsh clone https://github.com/kevroletin/dotfiles.desktop.git desktop
+
+[$HOME/.base16-xresources]
+checkout = git clone git@github.com:kevroletin/base16-xresources.git .base16-xresources || git clone https://github.com/kevroletin/base16-xresources.git .base16-xresources
+push =  :

@@ -1,10 +1,13 @@
 *
-!/bootstrap.d
-!/bootstrap.d/desktop.sh
 !/.config
 !/.config/dunst
 !/.config/dunst/dunstrc
+!/.config/mr
+!/.config/mr/config.d
+!/.config/mr/config.d/desktop
 !/.config/redshift.conf
+!/.dotfiles_bootstrap.d
+!/.dotfiles_bootstrap.d/desktop.sh
 !/.gitignore.d
 !/.gitignore.d/desktop
 !/ranger
