@@ -1,5 +1,7 @@
 #!/bin/bash
 
+/home/behemoth/bin/org-pull &
+
 # work around problem with java applications
 export _JAVA_AWT_WM_NONREPARENTING=1
 
@@ -53,5 +55,8 @@ if [ -x /usr/bin/gnome-power-manager ] ; then
     sleep 3
     gnome-power-manager &
 fi
+
+# Time tracking utility
+arbtt-capture --sample-rate=10 &
 
 exec xmonad
