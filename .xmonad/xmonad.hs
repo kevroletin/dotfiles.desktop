@@ -16,6 +16,7 @@ import           XMonad.Util.EZConfig         ()
 import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
                                                spawnPipe)
 import           XMonad.Util.Scratchpad
+import           XMonad.Hooks.EwmhDesktops
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
@@ -103,7 +104,7 @@ myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
 main :: IO ()
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
-    xmonad $ defaultConfig
+    xmonad $ ewmh $ defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
                                    <+> manageScratchPad
                                    <+> myManageHook
