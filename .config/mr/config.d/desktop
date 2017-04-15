@@ -3,3 +3,6 @@ checkout = ssh -T git@github.com 2>&1 | grep -q success && vcsh clone git@github
 
 [$HOME/.base16-xresources]
 checkout = ssh -T git@github.com 2>&1 | grep -q success && git clone --depth 1 git@github.com:kevroletin/base16-xresources.git .base16-xresources || git clone --depth 1 https://github.com/kevroletin/base16-xresources.git .base16-xresources
+
+[$HOME/.urxvt/ext]
+checkout = ssh -T git@github.com 2>&1 | grep -q success && git clone --depth 1 git@github.com:kevroletin/urxvt-perls.git ext || git clone --depth 1 https://github.com/kevroletin/urxvt-perls.git ext
