@@ -1,7 +1,7 @@
 Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        , bgColor = "black"
        , fgColor = "grey"
-       , position = TopW L 90
+       , position = TopSize L 90 18
        , commands = [ Run Cpu ["-w", "2", "-L","3","-H","50","--normal","gray","--high","red"] 10
                     , Run Memory ["-w", "2", "-t","Mem: <usedratio>%"] 10
                     , Run Swap ["-w", "2", "-t","<usedratio>%"] 10

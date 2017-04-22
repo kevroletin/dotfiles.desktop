@@ -39,7 +39,7 @@ xrandr --output VGA1 --primary --mode 1920x1080 --output LVDS1 --off
 xloadimage -fit -onroot -fullscreen -at 0,0 ~/Pictures/castle.jpg
 
 # Load X resources
-xrdb -merge .Xresources
+xrdb -merge ~/.Xresources
 
 # Set up an tray
 trayer --edge top --align right --SetDockType true --SetPartialStrut true \
