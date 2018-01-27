@@ -6,6 +6,7 @@ import           XMonad
 import           XMonad.Actions.CycleRecentWS
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.UpdatePointer
+import           XMonad.Config.Desktop
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
@@ -16,7 +17,6 @@ import           XMonad.Util.EZConfig         ()
 import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
                                                spawnPipe)
 import           XMonad.Util.Scratchpad
-import           XMonad.Hooks.EwmhDesktops
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
@@ -57,9 +57,7 @@ keysToAdd x = [
   , ((0, xK_Print), spawn "scrot")
 
   -- Shortcuts to open programs
-  , (((modMask x .|. shiftMask), xK_m), startSurfing)
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
-  , (((modMask x), xK_F2), startSurfing)
   , (((modMask x), xK_F3), openEmacsAgenda)
   , (((modMask x), xK_F4), killOrSpawn "redshift" [])
 
@@ -77,7 +75,6 @@ keysToAdd x = [
      ]
   where
     modm = (modMask x)
-    startSurfing = mapM_ spawn ["skype", "firefox", "thunderbird"]
 
 -- Unused default key bindings
 keysToRemove :: XConfig l -> [KeyCombination]
@@ -104,10 +101,8 @@ myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
 main :: IO ()
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
-    xmonad $ ewmh $ defaultConfig
-        { manageHook = manageDocks <+> manageHook defaultConfig
-                                   <+> manageScratchPad
-                                   <+> myManageHook
+    xmonad $ desktopConfig
+        { manageHook = manageHook desktopConfig <+> manageScratchPad <+> myManageHook
         , layoutHook = myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
                         { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
@@ -123,16 +118,14 @@ main = do
         , terminal = "urxvt -name URxvt"
         , startupHook = do openEmacsAgenda
                            windows $ W.greedyView "work"
-                           mapM_ spawn ["firefox", "thunderbird"]
         , workspaces = myWorkspaces
         }
     where
       myLayoutHook = maximize           -- M-f to temporary maximize windows
                      $ smartBorders     -- Don't put borders on fullFloatWindows
-                     $ avoidStruts      -- Prevent overlapping with docks (panels)
-                     $ layoutHook defaultConfig
+                     $ layoutHook desktopConfig
       noScratchPad ws = if ws == "NSP" then "" else ws
-      redColor = "#Cd2626"
+      redColor   = "#Cd2626"
       greenColor = "#8AE234"
 
 myWorkspaces :: [String]
