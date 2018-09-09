@@ -36,7 +36,7 @@ xrandr --output VGA1 --primary --mode 1920x1080 --output LVDS1 --off
 # Set the background image/color
 #xsetroot -solid midnightblue
 #xloadimage -fit -onroot -fullscreen -at 1500,0 ~/Pictures/castle.jpg -at 0,0 ~/Pictures/castle.jpg
-xloadimage -fit -onroot -fullscreen -at 0,0 ~/Pictures/castle.jpg
+xloadimage -fit -onroot -fullscreen -at 0,0 ~/Pictures/ra.jpg
 
 # Load X resources
 xrdb -merge ~/.Xresources
