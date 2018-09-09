@@ -1,6 +1,6 @@
 import           Control.Monad
-import qualified Data.Map                     as M
-import           Data.Monoid                  ()
+import qualified Data.Map                           as M
+import           Data.Monoid                        ()
 import           System.IO
 import           XMonad
 import           XMonad.Actions.CycleRecentWS
@@ -12,10 +12,10 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.NoBorders
-import qualified XMonad.StackSet              as W
-import           XMonad.Util.EZConfig         ()
-import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
-                                               spawnPipe)
+import qualified XMonad.StackSet                    as W
+import           XMonad.Util.EZConfig               ()
+import           XMonad.Util.Run                    (runProcessWithInput,
+                                                     safeSpawn, spawnPipe)
 import           XMonad.Util.Scratchpad
 
 type KeyCombination = (KeyMask, KeySym)
@@ -35,18 +35,26 @@ openInEmacs args = ifProcessRuns "emacs" viaClient viaEmacs
     where viaClient = safeSpawn "emacsclient" (["--no-wait"] ++ args)
           viaEmacs  = safeSpawn "emacs" args
 
-openEmacsAgenda = openInEmacs ["--eval", "(find-file \"~/org/personal/gtd.org\")", "--eval", "(org-agenda-list)"]
+openEmacsAgenda = openInEmacs [ "--eval", "(org-agenda-list)"
+                              , "--eval", "(spacemacs/toggle-maximize-buffer)"]
+
+-- mod1Mask - alt
+-- mod4Mask - win
 
 -- Custom key bindings
 keysToAdd :: XConfig l -> [KeyBinding]
 keysToAdd x = [
    -- Move view to right or left workspace
-     ((modMask x                , xK_Left), prevWS)
-  ,  ((modMask x                , xK_Right), nextWS)
+    ((modMask x, xK_Left), prevWS)
+  , ((modMask x, xK_Right), nextWS)
+  , ((modMask x, xK_h), prevWS)
+  , ((modMask x, xK_l), nextWS)
 
   -- Move focused program to right or left workspace
-  ,  (((modMask x .|. shiftMask), xK_Left), shiftToPrev)
-  ,  (((modMask x .|. controlMask), xK_Return), safeSpawn "emacs" [])
+  , ((modMask x .|. shiftMask, xK_Left), shiftToPrev)
+  , ((modMask x .|. shiftMask, xK_Right), shiftToNext)
+
+  , ((modMask x .|. controlMask, xK_Return), safeSpawn "emacs" [])
 
   -- Mod + Tab enters "cycle through history" mode. Arrows to switch. Esc - exit.
   , ((modMask x, xK_Tab), cycleRecentWS [xK_Tab] xK_Left xK_Right)
@@ -58,6 +66,7 @@ keysToAdd x = [
 
   -- Shortcuts to open programs
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
+  , (((modMask x), xK_F2), safeSpawn "slack" [] >> safeSpawn "firefox" [])
   , (((modMask x), xK_F3), openEmacsAgenda)
   , (((modMask x), xK_F4), killOrSpawn "redshift" [])
 
@@ -138,13 +147,14 @@ myManageHook = composeAll . concat $
       , [ resource  =? c --> doF (W.shift "mail") | c <- myClassMailShifts ]
       , [ resource  =? c --> doF (W.shift "chat") | c <- myClassChatShifts ]
       , [ className =? i --> doFloat | i <- myClassFloats ]
+      , [ (className =? "TeamViewer" <&&> stringProperty "WM_NAME" =? "") --> doIgnore ]
       , [ isFullscreen --> (doF W.focusDown <+> doFullFloat) ]
     ]
     where
         myClassWebShifts  = ["Navigator", "Firefox"]
         myClassMailShifts = ["Mail", "Thunderbird"]
-        myClassChatShifts = ["Pidgin", "skype"]
-        myClassFloats = ["Gimp"]
+        myClassChatShifts = ["Pidgin", "skype", "slack", "Telegram"]
+        myClassFloats = ["Gimp", "TeamViewer", "gtk-recordmydesktop", "Gtk-recordmydesktop"]
 
 manageScratchPad :: ManageHook
 manageScratchPad = scratchpadManageHook (W.RationalRect l t w h)
