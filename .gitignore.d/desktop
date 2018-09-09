@@ -1,4 +1,6 @@
 *
+!/.arbtt
+!/.arbtt/categorize.cfg
 !/.config
 !/.config/dunst
 !/.config/dunst/dunstrc
@@ -10,6 +12,7 @@
 !/.dotfiles_bootstrap.d/desktop.sh
 !/.gitignore.d
 !/.gitignore.d/desktop
+!/ra.jpg
 !/ranger
 !/ranger/rc.conf
 !/ranger/rifle.conf
