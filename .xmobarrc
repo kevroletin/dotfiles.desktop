@@ -4,11 +4,31 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        , position = TopSize L 90 18
        , commands = [ Run Cpu ["-w", "2", "-L","3","-H","50","--normal","gray","--high","red"] 10
                     , Run Memory ["-w", "2", "-t","Mem: <usedratio>%"] 10
+                    , Run Battery [ "--template" , "Batt: <acstatus>"
+                                  , "--Low"      , "10"        -- units: %
+                                  , "--High"     , "80"        -- units: %
+                                  , "--low"      , "red"
+                                  , "--normal"   , "gray"
+                                  , "--high"     , "gray"
+
+                                  , "--" -- battery specific options
+                                            -- discharging status
+                                            , "-o"	, "<left>% (<timeleft>)"
+                                            -- AC "on" status
+                                            , "-O"	, "<fc=#dAA520>Charging</fc> <left>%"
+                                            -- charged status
+                                            , "-i"	, "<fc=#006000>Charged</fc>"
+                                  ] 50
                     , Run Swap ["-w", "2", "-t","<usedratio>%"] 10
-                    , Run Date "%a %b %_d %l:%M" "date" 10
+                    --k , Run Date "%a %b %_d %l:%M" "date" 10
+                    , Run Date "%a %b %_d no-time no-self" "date" 10
                     , Run StdinReader
+                    , Run Com "/home/behemoth/bin/timew_curr_task.sh" [] "taskw" 100
+                    --, Run Com "/home/behemoth/bin/timew_curr_task.sh" [] "taskw" 30
+                    , Run Com "/home/behemoth/bin/battery_bar.sh" [] "bat_bar" 30
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% %memory% - %swap% <fc=#7fff00>%date%</fc>"
+       , template = "%StdinReader% }{ <fc=#ff3f00>%taskw%</fc> %bat_bar% %battery% %cpu% %memory% - %swap% <fc=#7fff00>%date%</fc>"
+       , allDesktops = True
        }
