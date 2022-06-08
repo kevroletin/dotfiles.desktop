@@ -1,6 +1,6 @@
 #!exec sh
 
-PACKAGES="xmonad libghc-xmonad-contrib-dev xmobar rxvt-unicode trayer xclip dmenu xloadimage redshift"
+PACKAGES="xmonad libghc-xmonad-contrib-dev xmobar rxvt-unicode trayer xclip dmenu xloadimage redshift feh"
 
 cat <<EOF >> $RESULT_SCRIPT_FILE
 "=== Configuring desktop session ==="
