@@ -68,5 +68,5 @@ emacs.foreground: base05
 emacs.menuBar: off
 emacs.toolBar: off
 emacs.verticalScrollBars: off
-Emacs.FontBackend: xft,x
-Emacs.font: Ubuntu Mono:pixelsize=23:foundry=DAMA:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+!Emacs.FontBackend: xft,x
+!Emacs.font: Ubuntu Mono:pixelsize=23:foundry=DAMA:weight=normal:slant=normal:width=normal:spacing=100:scalable=true

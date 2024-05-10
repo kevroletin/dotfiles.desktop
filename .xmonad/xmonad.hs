@@ -82,9 +82,7 @@ keysToAdd x = [
 
   -- Handle print screen using scrot utility. Resulting pictures are in in ~/Pictures
   , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
-  , ((modMask x, xK_quoteleft), scratchpadSpawnActionCustom "urxvt -name scratchpad -e ~/bin/tshsh")
-  -- , ((mod1Mask, xK_Escape), scratchpadSpawnActionTerminal "urxvt -e ~/bin/tshsh")
-  -- , ((modMask x, xK_Escape), scratchpadSpawnActionTerminal "urxvt -e ~/bin/tshsh")
+  , ((modMask x, xK_quoteleft), scratchpadSpawnActionCustom "urxvt -name scratchpad")
   , ((0, xK_Print), spawn "scrot")
 
   -- Shortcuts to open programs
@@ -152,7 +150,7 @@ main = do
         , focusedBorderColor = redColor
         , focusFollowsMouse = False
         , keys = myKeys
-        , terminal = "urxvt -name URxvt -e ~/bin/tshsh"
+        , terminal = "urxvt -name URxvt"
         -- , terminal = "urxvt -name URxvt"
         , startupHook = do openEmacsAgenda
                            windows $ W.greedyView "work"
