@@ -1,4 +1,4 @@
-#include ".base16-xresources/xresources/base16-default-dark-256.Xresources"
+#include ".base16-xresources/xresources/base16-solarized-light.Xresources"
 
 ! Enable antialiasing and hinting
 ! https://wiki.archlinux.org/index.php/X_resources#Xft_resources
@@ -17,13 +17,18 @@
 ! doesnt accept several parameters using URxvt or * name. So duplicate urxvt for
 ! several parameters.
 ! urxvt.font: xft:UbuntuMono:size=14
-URxvt.font: xft:UbuntuMono:size=14
+URxvt.font: xft:UbuntuMono:size=16
 XTerm*faceName: UbuntuMono
-XTerm*faceSize: UbuntuMono
+XTerm*faceSize: 16
 XTerm*metaSendsEscape: true
 xterm*faceName: UbuntuMono
-xterm*faceSize: UbuntuMono
+xterm*faceSize: 16
 xterm*metaSendsEscape: true
+! xterm*background:            base00
+! xterm*foreground:            base05
+
+XTerm.VT100.printAttributes: 2
+XTerm.VT100.printerCommand: cat - > /tmp/xterm.print.$$
 
 ! urxvt.scrollBar: false
 URxvt.scrollBar: false
@@ -44,9 +49,11 @@ URxvt.scrollBar: false
 ! Provides
 ! good user expierence if interactive shell is configured to copy killed text to
 ! clipboard
-URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard
+URxvt.perl-lib: /home/behemoth/.urxvt/ext
+URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard,font-size
 
-URxvt.keysym.M-Insert: perl:keyboard-select:activate
+!URxvt.keysym.M-Insert: perl:keyboard-select:activate
+URxvt.keysym.C-space: perl:keyboard-select:activate
 URxvt.keysym.M-r: perl:keyboard-select:search
 URxvt.keysym.C-M-p: perl:url-select:select_next
 URxvt.url-select.button: 1
@@ -58,15 +65,28 @@ URxvt.keysym.C-Insert: perl:clipboard:copy
 URxvt.keysym.S-Insert: perl:clipboard:paste
 URxvt.keysym.C-v: perl:clipboard:paste
 URxvt.keysym.C-S-v: perl:clipboard:paste_escaped
+! disable distracting messages on ctrl+shift
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
 ! `font-size` plugin
 URxvt.keysym.C-minus: perl:font-size:decrease
 URxvt.keysym.C-equal: perl:font-size:increase
-URxvt.font-size.step: 4
+URxvt.keysym.C-0:  font-size:reset
+! URxvt.font-size.step: 4
+URxvt.keysym.C-Up:     font-size:increase
+URxvt.keysym.C-Down:   font-size:decrease
+! URxvt.keysym.C-S-Up:   font-size:incglobal
+! URxvt.keysym.C-S-Down: font-size:decglobal
+URxvt.keysym.C-9:  font-size:show
+
+!----
 
 emacs.background: base00
 emacs.foreground: base05
 emacs.menuBar: off
 emacs.toolBar: off
 emacs.verticalScrollBars: off
-Emacs.FontBackend: xft,x
-Emacs.font: Ubuntu Mono:pixelsize=23:foundry=DAMA:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+!Emacs.FontBackend: xft,x
+!Emacs.font: xft:UbuntuMono-R
+!Emacs.font: xft:Ubuntu Mono:pixelsize=23:foundry=DAMA:weight=normal:slant=normal:width=normal:spacing=100:scalable=true

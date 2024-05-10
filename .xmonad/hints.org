@@ -89,6 +89,8 @@ about:config change it's values.
 There are many places which could control your keyboard layout. If you
 don't use settings daemons then setxkbmap and xmodmap will work.
 
+https://askubuntu.com/questions/451945/permanently-set-keyboard-layout-options-with-setxkbmap-in-gnome-unity
+
 ** Terminal and shell
 *** Terminal
 1. Install urxvt

@@ -43,6 +43,8 @@ openInEmacs args = ifProcessRuns "emacs" viaClient viaEmacs
 
 openEmacsAgenda = openInEmacs [ "/home/behemoth/org/personal/gtd.org" ]
 
+openObsidian = safeSpawn "obsidian" ["obsidian://open?vault=share&file=Dashboard"]
+
 toggleTouchpad = spawn "/home/behemoth/bin/toggleTouchpad"
 
 toggleCapture = spawn "/home/behemoth/bin/toggleCapture"
@@ -81,16 +83,18 @@ keysToAdd x = [
   , ((modMask x, xK_Tab), cycleRecentWS [xK_Tab] xK_Left xK_Right)
 
   -- Handle print screen using scrot utility. Resulting pictures are in in ~/Pictures
-  , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
-  , ((modMask x, xK_quoteleft), scratchpadSpawnActionCustom "urxvt -name scratchpad -e ~/bin/tshsh")
+  , ((controlMask, xK_Print), spawn "cd ~/Share; sleep 0.2; scrot -s")
+  , ((modMask x, xK_quoteleft), scratchpad)
+  , ((modMask x, xK_Escape), scratchpad)
+  , ((modMask x, xK_q), scratchpad)
+  -- , ((modMask x, xK_quoteleft), scratchpadSpawnActionCustom "urxvt -name scratchpad")
   -- , ((mod1Mask, xK_Escape), scratchpadSpawnActionTerminal "urxvt -e ~/bin/tshsh")
-  -- , ((modMask x, xK_Escape), scratchpadSpawnActionTerminal "urxvt -e ~/bin/tshsh")
-  , ((0, xK_Print), spawn "scrot")
+  , ((0, xK_Print), spawn "cd ~/Share; scrot")
 
   -- Shortcuts to open programs
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
   , (((modMask x), xK_F2), safeSpawn "slack" [] >> safeSpawn "firefox" [])
-  , (((modMask x), xK_F3), openEmacsAgenda)
+  , (((modMask x), xK_F3), openObsidian)
   , (((modMask x), xK_F4), killOrSpawn "redshift" [])
 
   -- Toggle xmobar
@@ -109,13 +113,22 @@ keysToAdd x = [
   , ((modm, xK_bracketleft), sendMessage (IncMasterN (-1)))
   , ((modm, xK_bracketright), sendMessage (IncMasterN 1))
      ]
+  -- ++
+  --   [((modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
+  --       | (key, sc) <- zip [xK_w, xK_e, xK_r] [2, 1, 0]
+  --       , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
   where
     modm = (modMask x)
+    -- scratchpad = scratchpadSpawnActionCustom "urxvt -name scratchpad -e ~/bin/tshsh zsh shh"
+    scratchpad = scratchpadSpawnActionCustom "urxvt -name scratchpad"
 
 -- Unused default key bindings
 keysToRemove :: XConfig l -> [KeyCombination]
 keysToRemove x = [
-    (modMask x, xK_m)
+  -- quake console
+    (modMask x, xK_q)
+  -- temporarily mute sound
+  , (modMask x, xK_m)
   -- Xmobar is used as programs launcher
   , (modMask x .|. shiftMask, xK_p)
   -- This one used for history cycle
@@ -133,7 +146,7 @@ keysToRemove x = [
 myKeys :: XConfig Layout -> M.Map (KeyCombination) (X ())
 myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
   where
-    strippedKeys t = foldr M.delete (keys defaultConfig t) (keysToRemove t)
+    strippedKeys t = foldr M.delete (keys def t) (keysToRemove t)
 
 main :: IO ()
 main = do
@@ -152,9 +165,9 @@ main = do
         , focusedBorderColor = redColor
         , focusFollowsMouse = False
         , keys = myKeys
-        , terminal = "urxvt -name URxvt -e ~/bin/tshsh"
-        -- , terminal = "urxvt -name URxvt"
-        , startupHook = do openEmacsAgenda
+        -- , terminal = "urxvt -name URxvt -e ~/bin/tshsh zsh shh"
+        , terminal = "urxvt -name URxvt"
+        , startupHook = do openObsidian
                            windows $ W.greedyView "work"
         , workspaces = myWorkspaces
         -- , handleEventHook = handleEventHook def <+> fullscreenEventHook
