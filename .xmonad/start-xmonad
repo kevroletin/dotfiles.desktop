@@ -69,7 +69,7 @@ kmonad-fekker() {
 #     ~/.local/bin/kmonad /home/behemoth/.kmonad.note.kbd
 #     sleep 3s
 # done &
-xremap --watch=device,config /home/behemoth/.xremap.yml &
+/home/behemoth/bin/xremap --watch=device,config /home/behemoth/.xremap.yml &
 
 # Notify when bluetooth is ready to connect
 sh -c 'dmesg -w | grep -q --line-buffered "Bluetooth: RFCOMM TTY layer initialized" && notify-send "Bluetooth initialized"' &
