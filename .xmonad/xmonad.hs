@@ -18,8 +18,16 @@ import qualified XMonad.StackSet              as W
 import           XMonad.Util.EZConfig         ()
 import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
                                                spawnPipe)
-import           XMonad.Util.Scratchpad
+import           XMonad.Util.NamedScratchpad
 import           XMonad.Hooks.EwmhDesktops
+
+scratchpads = [
+  -- run stardict, find it by class name, place it in the floating window
+  -- 1/6 of screen width from the left, 1/6 of screen height
+  -- from the top, 2/3 of screen width by 2/3 of screen height
+      NS "urxvt" "urxvt -name scratchpad" (appName =? "scratchpad" <&&> className =? "URxvt")
+          (customFloating $ W.RationalRect (0) (6/10) (1) (4/10))
+  ] where role = stringProperty "WM_WINDOW_ROLE"
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
@@ -84,11 +92,6 @@ keysToAdd x = [
 
   -- Handle print screen using scrot utility. Resulting pictures are in in ~/Pictures
   , ((controlMask, xK_Print), spawn "cd ~/Share; sleep 0.2; scrot -s")
-  , ((modMask x, xK_quoteleft), scratchpad)
-  , ((modMask x, xK_Escape), scratchpad)
-  , ((modMask x, xK_q), scratchpad)
-  -- , ((modMask x, xK_quoteleft), scratchpadSpawnActionCustom "urxvt -name scratchpad")
-  -- , ((mod1Mask, xK_Escape), scratchpadSpawnActionTerminal "urxvt -e ~/bin/tshsh")
   , ((0, xK_Print), spawn "cd ~/Share; scrot")
 
   -- Shortcuts to open programs
@@ -112,23 +115,20 @@ keysToAdd x = [
 
   , ((modm, xK_bracketleft), sendMessage (IncMasterN (-1)))
   , ((modm, xK_bracketright), sendMessage (IncMasterN 1))
-     ]
-  -- ++
-  --   [((modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-  --       | (key, sc) <- zip [xK_w, xK_e, xK_r] [2, 1, 0]
-  --       , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+
+  -- scratchpads
+  , ((modMask x, xK_Escape), namedScratchpadAction scratchpads "urxvt")
+  ]
   where
     modm = (modMask x)
-    -- scratchpad = scratchpadSpawnActionCustom "urxvt -name scratchpad -e ~/bin/tshsh zsh shh"
-    scratchpad = scratchpadSpawnActionCustom "urxvt -name scratchpad"
 
 -- Unused default key bindings
 keysToRemove :: XConfig l -> [KeyCombination]
 keysToRemove x = [
   -- quake console
-    (modMask x, xK_q)
+  -- (modMask x, xK_q)
   -- temporarily mute sound
-  , (modMask x, xK_m)
+    (modMask x, xK_m)
   -- Xmobar is used as programs launcher
   , (modMask x .|. shiftMask, xK_p)
   -- This one used for history cycle
@@ -137,8 +137,6 @@ keysToRemove x = [
   , (modm, xK_h)
   , (modm, xK_l)
   -- "<" and ">" are bound to shrink/expand master area
-  , (modm, xK_comma)
-  , (modm, xK_period)
   ]
   where
     modm = (modMask x)
@@ -152,7 +150,7 @@ main :: IO ()
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
     xmonad $ ewmh gnomeConfig
-        { manageHook = manageHook gnomeConfig <+> manageScratchPad <+> myManageHook
+        { manageHook = manageHook gnomeConfig <+> namedScratchpadManageHook scratchpads <+> myManageHook
         , layoutHook = myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
                         { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
@@ -198,9 +196,3 @@ myManageHook = composeAll . concat $
         myClassMailShifts = ["Mail", "Thunderbird"]
         myClassChatShifts = ["Pidgin", "skype", "slack", "Telegram"]
         myClassFloats = ["Gimp", "TeamViewer", "gtk-recordmydesktop", "Gtk-recordmydesktop"]
-
-manageScratchPad :: ManageHook
-manageScratchPad = scratchpadManageHook (W.RationalRect l t w h)
-  where
-    (h, w) = (0.4  , 1)
-    (t, l) = (1 - h, 1 - w)
