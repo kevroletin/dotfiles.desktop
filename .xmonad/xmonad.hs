@@ -22,11 +22,11 @@ import           XMonad.Util.NamedScratchpad
 import           XMonad.Hooks.EwmhDesktops
 
 scratchpads = [
-  -- run stardict, find it by class name, place it in the floating window
-  -- 1/6 of screen width from the left, 1/6 of screen height
-  -- from the top, 2/3 of screen width by 2/3 of screen height
       NS "urxvt" "urxvt -name scratchpad" (appName =? "scratchpad" <&&> className =? "URxvt")
-          (customFloating $ W.RationalRect (0) (6/10) (1) (4/10))
+          (customFloating $ W.RationalRect (0) (6/10) (1) (4/10)),
+      NS "numen" "urxvt -name scratchpad-numen -e sh -c 'tail -f /tmp/phrases.log &  numen --phraselog /tmp/phrases.log'"
+      (appName =? "scratchpad-numen" <&&> className =? "URxvt")
+          (customFloating $ W.RationalRect (2/10) (2/10) (6/10) (6/10))
   ] where role = stringProperty "WM_WINDOW_ROLE"
 
 type KeyCombination = (KeyMask, KeySym)
@@ -46,8 +46,10 @@ openInEmacs args = ifProcessRuns "emacs" viaClient viaEmacs
     where viaClient = safeSpawn "emacsclient" (["--no-wait"] ++ args)
           viaEmacs  = safeSpawn "emacs" args
 
--- openEmacsAgenda = openInEmacs [ "--eval", "(org-agenda-list)"
---                               , "--eval", "(spacemacs/toggle-maximize-buffer)"]
+stopWhisper :: X()
+stopWhisper = do
+  safeSpawn "/bin/bash" ["-c", "echo load /home/behemoth/.config/numen/phrases/*.phrases| numenc"]
+  safeSpawn "flatpak" ["run", "net.mkiol.SpeechNote", "--action", "stop-listening"]
 
 openEmacsAgenda = openInEmacs [ "/home/behemoth/org/personal/gtd.org" ]
 
@@ -61,7 +63,7 @@ toggleEarbuds = spawn "/home/behemoth/bin/toggleEarbuds"
 
 muteSound = spawn "/home/behemoth/bin/mute"
 
-sendClipboardToTelegram = spawn "/home/behemoth/bin/telegram-send"
+-- sendClipboardToTelegram = spawn "/home/behemoth/bin/telegram-send"
 
 -- mod1Mask - alt
 -- mod4Mask - win
@@ -73,7 +75,8 @@ keysToAdd x = [
   , ((modMask x .|. shiftMask, xK_b), toggleEarbuds)
   , ((modMask x, xK_c), toggleCapture)
   , ((modMask x, xK_m), muteSound)
-  , ((modMask x, xK_n), sendClipboardToTelegram)
+  , ((modMask x, xK_s), stopWhisper)
+  -- , ((modMask x, xK_n), sendClipboardToTelegram)
 
    -- Move view to right or left workspace
   , ((modMask x, xK_Left), prevWS)
@@ -117,7 +120,9 @@ keysToAdd x = [
   , ((modm, xK_bracketright), sendMessage (IncMasterN 1))
 
   -- scratchpads
-  , ((modMask x, xK_Escape), namedScratchpadAction scratchpads "urxvt")
+  , ((modMask x, xK_Escape), namedScratchpadAction scratchpads "urxvt") -- quake
+  , ((modMask x, xK_grave), namedScratchpadAction scratchpads "urxvt")  -- quake
+  , ((modMask x, xK_n), namedScratchpadAction scratchpads "numen")
   ]
   where
     modm = (modMask x)
@@ -126,9 +131,11 @@ keysToAdd x = [
 keysToRemove :: XConfig l -> [KeyCombination]
 keysToRemove x = [
   -- quake console
-  -- (modMask x, xK_q)
+     (modMask x, xK_grave)
   -- temporarily mute sound
-    (modMask x, xK_m)
+  ,  (modMask x, xK_m)
+  -- scratchpad numen
+  , (modMask x, xK_n)
   -- Xmobar is used as programs launcher
   , (modMask x .|. shiftMask, xK_p)
   -- This one used for history cycle
@@ -137,6 +144,8 @@ keysToRemove x = [
   , (modm, xK_h)
   , (modm, xK_l)
   -- "<" and ">" are bound to shrink/expand master area
+  , (modm, xK_comma)
+  , (modm, xK_period)
   ]
   where
     modm = (modMask x)
@@ -187,6 +196,7 @@ myManageHook = composeAll . concat $
         [ className =? b --> doF (W.shift "web")  | b <- myClassWebShifts  ]
       , [ resource  =? c --> doF (W.shift "mail") | c <- myClassMailShifts ]
       , [ resource  =? c --> doF (W.shift "chat") | c <- myClassChatShifts ]
+      , [ (appName  =? "Alert" <&&> className =? "firefox") --> doFloat ]
       , [ className =? i --> doFloat | i <- myClassFloats ]
       , [ (className =? "TeamViewer" <&&> stringProperty "WM_NAME" =? "") --> doIgnore ]
       , [ isFullscreen --> (doF W.focusDown <+> doFullFloat) ]
