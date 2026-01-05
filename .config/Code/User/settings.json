@@ -1,0 +1,148 @@
+{
+    // Fix ctrl-o "go back" after ,gd
+    // https://github.com/VSCodeVim/Vim/issues/3277
+    // manually configure go back and go forward
+    "vim.handleKeys": {
+        "<C-o>": false
+    },
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": [
+                "k",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ]
+        }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<space>"
+            ],
+            "commands": [
+                "vspacecode.space"
+            ]
+        },
+        {
+            "before": [
+                ","
+            ],
+            "commands": [
+                "vspacecode.space",
+                {
+                    "command": "whichkey.triggerKey",
+                    "args": "m"
+                }
+            ]
+        },
+        // Vim key settings 
+        //https://github.com/VSCodeVim/Vim/issues/2007#issuecomment-529924611
+        {
+            "before": [
+                "u"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "undo"
+                }
+            ]
+        },
+        {
+            "before": [
+                "<C-r>"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "redo"
+                }
+            ]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<space>"
+            ],
+            "commands": [
+                "vspacecode.space"
+            ]
+        },
+        {
+            "before": [
+                ","
+            ],
+            "commands": [
+                "vspacecode.space",
+                {
+                    "command": "whichkey.triggerKey",
+                    "args": "m"
+                }
+            ]
+        }
+    ],
+    "whichkey.delay": 500,
+    "whichkey.showButtons": true,
+    "jupyter.alwaysTrustNotebooks": true,
+    "editor.lineHeight": 0,
+    "editor.cursorStyle": "line",
+    "editor.lineNumbers": "on",
+    "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
+    "editor.wordWrap": "off",
+    "editor.guides.indentation": false,
+    "haskell.manageHLS": "GHCup",
+    "editor.fontFamily": "'Source Code Pro', 'Ubuntu Mono', 'monospace', monospace",
+    "editor.fontSize": 15,
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "workbench.preferredDarkColorTheme": "Solarized Dark",
+    "workbench.colorCustomizations": {
+        "editor.selectionBackground": "#586e7532",
+        "editor.selectionForeground": "#fdf6e3ff",
+        "[Solarized Light]": {
+            "editorInlayHint.background": "#ffffff00",
+            "editorInlayHint.foreground": "#888888cc",
+            "editorInlayHint.parameterBackground": "#ffffff00",
+            "editorInlayHint.parameterForeground": "#888888cc",
+            "editorInlayHint.typeBackground": "#ffffff00",
+            "editorInlayHint.typeForeground": "#888888cc"
+        }
+    },
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.enabled": false,
+    "window.zoomLevel": 2,
+    "workbench.editor.showTabs": "single",
+    "workbench.startupEditor": "none",
+    // from https://vspacecode.github.io/docs/whichkey/extra
+    // seems to have no effects :(
+    "customizeUI.stylesheet": {
+        // Let the quick pick take the full window height, so that more bindings are visible.
+        ".quick-input-widget > .quick-input-list > .monaco-list": "max-height: 100vh !important;",
+        // Colorize icons uniformly and add some extra padding
+        ".quick-input-widget > .quick-input-list .codicon": "color: #83a598 !important; padding-right: 5px;",
+        // Colorize entries starting with a `+` differently
+        ".quick-input-widget > .quick-input-list .monaco-list-row[aria-label*=\" +\"] .label-description": "color: #8ec07c;"
+    },
+    "editor.bracketPairColorization.enabled": true,
+    "rust-analyzer.checkOnSave": true,
+    "rust-analyzer.check.command": "clippy",
+    "git.openRepositoryInParentFolders": "never",
+    "editor.inlineSuggest.enabled": true,
+    "lldb.suppressUpdateNotifications": true,
+    "editor.renderWhitespace": "none",
+    "workbench.colorTheme": "Solarized Light",
+    "workbench.activityBar.location": "hidden",
+    "files.autoSave": "afterDelay",
+    "rust-analyzer.linkedProjects": [
+    ],
+    "github.copilot.editor.enableAutoCompletions": true,
+    "rust-analyzer.workspace.discoverConfig": null,
+    "window.commandCenter": false
+}
