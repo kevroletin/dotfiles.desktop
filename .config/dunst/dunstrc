@@ -1,5 +1,5 @@
 [global]
-    font = "Monospace 11"
+    font = "Ubuntu Mono 13"
     allow_markup = yes
     format = "<b>%s %p</b>\n%b"
     sort = yes
@@ -17,7 +17,6 @@
     horizontal_padding = 10
     separator_color = frame
     dmenu = "/usr/bin/dmenu -p dunst: -nb #FFFFFF -nf #000000 -sb #94DBFF -sf #000000"
-    browser = /home/knopwob/bin/url_dispatcher
 
 [frame]
     width = 3
@@ -32,6 +31,7 @@
 [urgency_low]
     background = #dfe1e0
     foreground = "#000000"
+    highlight="#e78a4e"
 
 [urgency_normal]
     background = #dfe1e0

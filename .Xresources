@@ -16,12 +16,18 @@
 ! other urxvt windows are (urxvt, URxvt). For some reason non-scratchpad version
 ! doesnt accept several parameters using URxvt or * name. So duplicate urxvt for
 ! several parameters.
-! urxvt.font: xft:UbuntuMono:size=14
-URxvt.font: xft:UbuntuMono:size=16
-XTerm*faceName: UbuntuMono
+! --- font names
+! fc-list | grep Inconsolata
+! ...
+! /usr/share/fonts/nerd-fonts-complete/ttf/InconsolataGo Bold Nerd Font Complete.ttf: InconsolataGo Nerd Font:style=Bold
+! ->
+! URxvt.font: xft:InconsolataGo\ Nerd\ Font:size=20
+!
+URxvt.font: xft:UbuntuMono\ Nerd\ Font\ Mono:size=19
+XTerm*faceName: UbuntuMono\ Nerd\ Font\ Mono
 XTerm*faceSize: 16
 XTerm*metaSendsEscape: true
-xterm*faceName: UbuntuMono
+xterm*faceName: UbuntuMono\ Nerd\ Font\ Mono
 xterm*faceSize: 16
 xterm*metaSendsEscape: true
 ! xterm*background:            base00
@@ -90,3 +96,4 @@ emacs.verticalScrollBars: off
 !Emacs.FontBackend: xft,x
 !Emacs.font: xft:UbuntuMono-R
 !Emacs.font: xft:Ubuntu Mono:pixelsize=23:foundry=DAMA:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+Xcursor.theme: default
