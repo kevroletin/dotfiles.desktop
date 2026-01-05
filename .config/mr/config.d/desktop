@@ -1,6 +1,3 @@
-[$HOME/.config/vcsh/repo.d/desktop.git]
-checkout = ssh -T git@github.com 2>&1 | grep -q success && vcsh clone git@github.com:kevroletin/dotfiles.desktop.git desktop || vcsh clone https://github.com/kevroletin/dotfiles.desktop.git desktop
-
 [$HOME/.base16-xresources]
 checkout = ssh -T git@github.com 2>&1 | grep -q success && git clone --depth 1 git@github.com:kevroletin/base16-xresources.git .base16-xresources || git clone --depth 1 https://github.com/kevroletin/base16-xresources.git .base16-xresources
 
