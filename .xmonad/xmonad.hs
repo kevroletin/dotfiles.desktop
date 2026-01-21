@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 import           Control.Monad
 import qualified Data.Map                     as M
 import           Data.Monoid                  ()
@@ -6,7 +8,7 @@ import           XMonad
 import           XMonad.Actions.CycleRecentWS
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.UpdatePointer
-import           XMonad.Actions.CopyWindow (copyToAll, killAllOtherCopies)
+import           XMonad.Actions.CopyWindow
 import           XMonad.Config.Desktop
 import           XMonad.Config.Desktop
 import           XMonad.Config.Gnome
@@ -24,6 +26,16 @@ import           XMonad.Util.NamedScratchpad
 import           XMonad.Hooks.EwmhDesktops
 import           Graphics.X11.ExtraTypes.XF86
 import           XMonad.Actions.UpKeys
+import           System.Clipboard (getClipboardString)
+import           System.Directory (doesFileExist, doesDirectoryExist)
+
+dirFromClipboard :: String -> IO String
+dirFromClipboard fallback =
+  getClipboardString >>= \case
+      Nothing -> pure fallback
+      Just x -> doesDirectoryExist x >>= \case
+                    True -> pure x
+                    False -> pure fallback
 
 scratchpads = [
       NS "quake" "wezterm start --class scratchpad-quake"
@@ -36,6 +48,13 @@ scratchpads = [
       --     (appName =? "scratchpad-test")
       --     (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
   ]
+
+quakeAct =
+  customRunNamedScratchpadAction
+    (\_ -> do x <- liftIO (dirFromClipboard "/home/behemoth")
+              safeSpawn "wezterm" ["start", "--cwd", x, "--class", "scratchpad-quake"])
+    scratchpads
+    "quake"
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
@@ -147,8 +166,8 @@ keysToAdd x = [
   , ((modm, xK_bracketright), sendMessage (IncMasterN 1))
 
   -- scratchpads
-  , ((modm, xK_Escape), namedScratchpadAction scratchpads "quake") -- quake
-  , ((modm, xK_grave), namedScratchpadAction scratchpads "quake")  -- quake
+  , ((modm, xK_Escape), quakeAct)
+  , ((modm, xK_grave), quakeAct)
   , ((modm .|. shiftMask, xK_n), namedScratchpadAction scratchpads "numen")
 
   -- See Graphics.X11.ExtraTypes.XF86
@@ -162,6 +181,10 @@ keysToAdd x = [
   -- Pin(unpin) window to all workspaces
   , ((modm .|. shiftMask, xK_a), windows copyToAll)
   , ((modm, xK_a), killAllOtherCopies)
+
+
+  , ((modm .|. shiftMask, xK_Return), do x <- liftIO (dirFromClipboard "/home/behemoth")
+                                         safeSpawn "wezterm" ["start", "--cwd", x])
   ]
   where
     modm = (modMask x)
@@ -195,6 +218,8 @@ keysToRemove x = [
   -- "<" and ">" are bound to shrink/expand master area
   , (modm, xK_comma)
   , (modm, xK_period)
+  --
+  , (modm .|. shiftMask, xK_Return)
   ]
   where
     modm = (modMask x)
@@ -210,17 +235,21 @@ main = do
     xmonad
       . (\c -> useUpKeys (def{ grabKeys = True, upKeys = myUpKeys c }) c)
       . docks
+      . ewmhFullscreen
       . ewmh
       $ gnomeConfig
         { manageHook = manageHook gnomeConfig <+> namedScratchpadManageHook scratchpads <+> myManageHook
         , layoutHook = myLayoutHook
-        , logHook = dynamicLogWithPP xmobarPP
-                        { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
-                        , ppOutput = hPutStrLn xmproc
-                        , ppTitle = xmobarColor greenColor "" . shorten 50
-                        , ppHidden = noScratchPad
-                        }
-                    >> updatePointer (0.5, 0.5) (0, 0)
+        , logHook = do x <- copiesPP (pad . xmobarColor "orange" "black") $ xmobarPP
+                            { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
+                            , ppOutput = hPutStrLn xmproc
+                            , ppTitle = xmobarColor greenColor "" . shorten 50
+                            , ppHidden = noScratchPad
+                            }
+                       dynamicLogWithPP x
+                       -- mouse pointer follows focus
+                       -- https://hackage.haskell.org/package/xmonad-contrib-0.18.1/docs/XMonad-Actions-UpdatePointer.html
+                       updatePointer (0.5, 0.5) (0, 0)
         , modMask = mod4Mask
         , focusedBorderColor = redColor
         , focusFollowsMouse = False
