@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -x
+
+# Configuration
+BACKLIGHT_PATH="/sys/class/backlight/intel_backlight/brightness"
+MAX_VAL=120000
+MIN_VAL=1000
+CHANGE_STEP=10000
+LARGE_STEP=10000
+SMALL_STEP=1000
+
+# Read current brightness
+CURRENT_VAL=$(cat "$BACKLIGHT_PATH")
+
+# Process argument
+case $1 in
+    +)
+        if [ "$CURRENT_VAL" -ge "$MAX_VAL" ]; then
+            exit 0
+        else
+            if [ "$CURRENT_VAL" -ge "$CHANGE_STEP" ]; then
+                NEW_VAL=$((CURRENT_VAL + LARGE_STEP))
+            else
+                NEW_VAL=$((CURRENT_VAL + SMALL_STEP))
+            fi
+        fi
+        ;;
+    -)
+        if [ "$CURRENT_VAL" -le "$MIN_VAL" ]; then
+            exit 0
+        else
+            if [ "$CURRENT_VAL" -le "$CHANGE_STEP" ]; then
+                NEW_VAL=$((CURRENT_VAL - SMALL_STEP))
+            else
+                NEW_VAL=$((CURRENT_VAL - LARGE_STEP))
+            fi
+        fi
+        ;;
+    *)
+        echo "Usage: $0 {+|-}"
+        exit 1
+        ;;
+esac
+
+# Bound the results to Min/Max
+if [ "$NEW_VAL" -gt "$MAX_VAL" ]; then
+    NEW_VAL=$MAX_VAL
+elif [ "$NEW_VAL" -lt "$MIN_VAL" ]; then
+    NEW_VAL=$MIN_VAL
+fi
+
+echo "$NEW_VAL" > "$BACKLIGHT_PATH"

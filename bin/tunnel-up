@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# from https://github.com/xjasonlyu/tun2socks/wiki/Examples
+
+set -xe
+
+export GATEWAY=$(nmcli device show | grep IP4.GATEWAY | head -n1 | awk '{print $2}')
+
+if [ -z "$GATEWAY" || "$GATEWAY" = "--" ]; then
+  echo "gateway is empty"
+else
+  echo "gateway $GATEWAY"
+fi
+
+if ( ip link show | grep tun0 ); then
+    echo "ton0 already configured"
+else
+    sudo ip tuntap add mode tun dev tun0
+    sudo ip addr add 198.18.0.1/15 dev tun0
+    sudo ip link set dev tun0 up
+fi
+
+if ( ip link show | grep "tun0 metric 1" ); then
+  echo "routes already configured"
+else
+  sudo ip route del default
+  sudo ip route add default via 198.18.0.1 dev tun0 metric 1
+  sudo ip route add default via $GATEWAY dev wlp59s0 metric 10
+fi
+
+tun2socks -device tun0 -proxy socks5://${GATEWAY}:10808 -interface wlp59s0

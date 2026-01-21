@@ -35,6 +35,7 @@ xterm*metaSendsEscape: true
 
 XTerm.VT100.printAttributes: 2
 XTerm.VT100.printerCommand: cat - > /tmp/xterm.print.$$
+XTerm*vt100.modifyOtherKeys: 1
 
 ! urxvt.scrollBar: false
 URxvt.scrollBar: false

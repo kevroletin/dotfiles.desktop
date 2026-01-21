@@ -6,6 +6,7 @@ import           XMonad
 import           XMonad.Actions.CycleRecentWS
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.UpdatePointer
+import           XMonad.Actions.CopyWindow (copyToAll, killAllOtherCopies)
 import           XMonad.Config.Desktop
 import           XMonad.Config.Desktop
 import           XMonad.Config.Gnome
@@ -18,16 +19,23 @@ import qualified XMonad.StackSet              as W
 import           XMonad.Util.EZConfig         ()
 import           XMonad.Util.Run              (runProcessWithInput, safeSpawn,
                                                spawnPipe)
+import           XMonad.Util.SpawnOnce
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Hooks.EwmhDesktops
+import           Graphics.X11.ExtraTypes.XF86
+import           XMonad.Actions.UpKeys
 
 scratchpads = [
-      NS "urxvt" "urxvt -name scratchpad" (appName =? "scratchpad" <&&> className =? "URxvt")
-          (customFloating $ W.RationalRect (0) (6/10) (1) (4/10)),
-      NS "numen" "urxvt -name scratchpad-numen -e sh -c 'tail -f /tmp/phrases.log &  numen --phraselog /tmp/phrases.log'"
-      (appName =? "scratchpad-numen" <&&> className =? "URxvt")
-          (customFloating $ W.RationalRect (2/10) (2/10) (6/10) (6/10))
-  ] where role = stringProperty "WM_WINDOW_ROLE"
+      NS "quake" "wezterm start --class scratchpad-quake"
+          (appName =? "scratchpad-quake")
+          (customFloating $ W.RationalRect (0) (6/10) (1) (4/10))
+      , NS "numen" "wezterm start --class scratchpad-numen --cwd /home/behemoth -e sh -c 'tail -f /tmp/phrases.log & numen --phraselog /tmp/phrases.log'"
+          (appName =? " scratchpad-numen")
+          (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
+      -- , NS "test" "wezterm start --class scratchpad-test --position 1600,450 "
+      --     (appName =? "scratchpad-test")
+      --     (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
+  ]
 
 type KeyCombination = (KeyMask, KeySym)
 type KeyBinding = (KeyCombination, X ())
@@ -53,30 +61,49 @@ stopWhisper = do
 
 openEmacsAgenda = openInEmacs [ "/home/behemoth/org/personal/gtd.org" ]
 
-openObsidian = safeSpawn "obsidian" ["obsidian://open?vault=share&file=Dashboard"]
+openObsidian =
+  ifProcessRuns "obsidian"
+    (return ())
+    (safeSpawn "obsidian" ["obsidian://open?vault=share&file=Dashboard"])
 
 toggleTouchpad = spawn "/home/behemoth/bin/toggleTouchpad"
 
-toggleCapture = spawn "/home/behemoth/bin/toggleCapture"
+--toggleCapture = spawn "/home/behemoth/bin/toggleCapture"
 
 toggleEarbuds = spawn "/home/behemoth/bin/toggleEarbuds"
 
 muteSound = spawn "/home/behemoth/bin/mute"
 
+-- pause numen and start voxtype, so that numen doesn't jump around while transcribing speech
+voxtypeStart = do spawn "/home/behemoth/Scratch/rust/voxtype/target/release/voxtype record start"
+                  spawn "notify-send 'voxtype record start'"
+                  -- pause numen
+                  safeSpawn "/bin/bash" ["-c", "echo load /home/behemoth/.config/numen/phrases/empty.phrases | numenc"]
+
+voxtypeStop = do spawn "/home/behemoth/Scratch/rust/voxtype/target/release/voxtype record stop"
+                 spawn "notify-send 'voxtype record stop'"
+                 -- resume numen
+                 safeSpawn "/bin/bash" ["-c", "echo load /home/behemoth/.config/numen/phrases/*.phrases | numenc"]
+
 -- sendClipboardToTelegram = spawn "/home/behemoth/bin/telegram-send"
+
+-- * disable repeating (bouncing) ScrollLock key
+-- * enable russian layout
+--
+-- Configuring X setting turned out to be complicated due to startup order. Some daemon overrides settings during user startup
+-- and playing with systemctl startup sequence didn't help. As a workaround, this script has 5sec sleep and we run it here
+-- asynchronously
+configureXset = do spawnOnce "/home/behemoth/bin/configure-xset &"
 
 -- mod1Mask - alt
 -- mod4Mask - win
-
--- Custom key bindings
 keysToAdd :: XConfig l -> [KeyBinding]
 keysToAdd x = [
     ((modMask x .|. shiftMask, xK_m), toggleTouchpad)
   , ((modMask x .|. shiftMask, xK_b), toggleEarbuds)
-  , ((modMask x, xK_c), toggleCapture)
+  -- , ((modMask x, xK_c), toggleCapture)
   , ((modMask x, xK_m), muteSound)
   , ((modMask x, xK_s), stopWhisper)
-  -- , ((modMask x, xK_n), sendClipboardToTelegram)
 
    -- Move view to right or left workspace
   , ((modMask x, xK_Left), prevWS)
@@ -96,16 +123,16 @@ keysToAdd x = [
   -- Handle print screen using scrot utility. Resulting pictures are in in ~/Pictures
   , ((controlMask, xK_Print), spawn "cd ~/Share; sleep 0.2; scrot -s")
   , ((0, xK_Print), spawn "cd ~/Share; scrot")
+  -- , (((modMask x), xK_F2), spawn "/home/behemoth/Downloads/NormCap-0.5.9-x86_64.AppImage -l chi --clipboard-handler xclip")
 
   -- Shortcuts to open programs
   , (((modMask x), xK_F1), spawn "xprop | grep 'WM_CLASS\\|WM_NAME' | xmessage -file -")
-  , (((modMask x), xK_F2), safeSpawn "slack" [] >> safeSpawn "firefox" [])
+  --, (((modMask x), xK_F2), safeSpawn "slack" [] >> safeSpawn "firefox" [])
   , (((modMask x), xK_F3), openObsidian)
   , (((modMask x), xK_F4), killOrSpawn "redshift" [])
 
   -- Toggle xmobar
-  , ((modMask x, xK_b), sendMessage ToggleStruts)
-  -- Lock the screen
+  , ((modMask x, xK_b), sendMessage ToggleStruts) -- Lock the screen
   , ((modMask x, xK_z), do safeSpawn "xscreensaver-command" ["-lock"])
   , ((modMask x .|. shiftMask, xK_z), do spawn "sleep 1s; xset dpms force off")
 
@@ -120,12 +147,34 @@ keysToAdd x = [
   , ((modm, xK_bracketright), sendMessage (IncMasterN 1))
 
   -- scratchpads
-  , ((modMask x, xK_Escape), namedScratchpadAction scratchpads "urxvt") -- quake
-  , ((modMask x, xK_grave), namedScratchpadAction scratchpads "urxvt")  -- quake
-  , ((modMask x, xK_n), namedScratchpadAction scratchpads "numen")
+  , ((modm, xK_Escape), namedScratchpadAction scratchpads "quake") -- quake
+  , ((modm, xK_grave), namedScratchpadAction scratchpads "quake")  -- quake
+  , ((modm .|. shiftMask, xK_n), namedScratchpadAction scratchpads "numen")
+
+  -- See Graphics.X11.ExtraTypes.XF86
+  , ((0, xF86XK_AudioLowerVolume), spawn "/home/behemoth/bin/adjust-brightness -")
+  , ((0, xF86XK_AudioRaiseVolume), spawn "/home/behemoth/bin/adjust-brightness +")
+  -- , ((0, xF86XK_AudioMute), spawn "sleep 0.5s; xset dpms force off")
+  , ((0, xF86XK_AudioMute), spawn "/home/behemoth/bin/switch-dark-theme toggle")
+
+  , ((0, xK_Scroll_Lock), voxtypeStart) -- see myUpKeys for the stop action
+
+  -- Pin(unpin) window to all workspaces
+  , ((modm .|. shiftMask, xK_a), windows copyToAll)
+  , ((modm, xK_a), killAllOtherCopies)
   ]
   where
     modm = (modMask x)
+
+-- Run this command to disable key repeat
+-- xset -r 78
+myUpKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
+myUpKeys conf = M.fromList
+  [
+    ((0, xK_Scroll_Lock), voxtypeStop)
+  ]
+  where
+    modm = modMask conf
 
 -- Unused default key bindings
 keysToRemove :: XConfig l -> [KeyCombination]
@@ -158,7 +207,11 @@ myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
 main :: IO ()
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
-    xmonad $ ewmh gnomeConfig
+    xmonad
+      . (\c -> useUpKeys (def{ grabKeys = True, upKeys = myUpKeys c }) c)
+      . docks
+      . ewmh
+      $ gnomeConfig
         { manageHook = manageHook gnomeConfig <+> namedScratchpadManageHook scratchpads <+> myManageHook
         , layoutHook = myLayoutHook
         , logHook = dynamicLogWithPP xmobarPP
@@ -172,10 +225,11 @@ main = do
         , focusedBorderColor = redColor
         , focusFollowsMouse = False
         , keys = myKeys
-        -- , terminal = "urxvt -name URxvt -e ~/bin/tshsh zsh shh"
-        , terminal = "urxvt -name URxvt"
-        , startupHook = do openObsidian
+        -- , terminal = "wezterm -name Wezterm -e ~/bin/tshsh zsh shh"
+        , terminal = "wezterm start --class Wezterm"
+        , startupHook = do -- openObsidian
                            windows $ W.greedyView "work"
+                           configureXset
         , workspaces = myWorkspaces
         -- , handleEventHook = handleEventHook def <+> fullscreenEventHook
         }
@@ -200,6 +254,7 @@ myManageHook = composeAll . concat $
       , [ className =? i --> doFloat | i <- myClassFloats ]
       , [ (className =? "TeamViewer" <&&> stringProperty "WM_NAME" =? "") --> doIgnore ]
       , [ isFullscreen --> (doF W.focusDown <+> doFullFloat) ]
+      , [ (className =? "ignore-window-manager") --> doIgnore ]
     ]
     where
         myClassWebShifts  = ["Navigator", "Firefox"]

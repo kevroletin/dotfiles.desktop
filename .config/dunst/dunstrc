@@ -1,115 +1,37 @@
 [global]
-    font = "Ubuntu Mono 13"
-    allow_markup = yes
-    format = "<b>%s %p</b>\n%b"
-    sort = yes
-    indicate_hidden = true
-    # geometry = "x5"
-    idle_threshold = 0
-    geometry = "300x5-5+23"
-    alignment = center
-    # show_age_threshold = 20
-    sticky_history = yes
-    follow = mouse
-    word_wrap = yes
-    separator_height = 2
-    padding = 10
-    horizontal_padding = 10
-    separator_color = frame
-    dmenu = "/usr/bin/dmenu -p dunst: -nb #FFFFFF -nf #000000 -sb #94DBFF -sf #000000"
+    font = "UbuntuMono Nerd Font Propo 13"
+    allow_markup = true
 
-[frame]
-    width = 3
-    color = "#000000"
+    sort = true
+    notification_limit = 5
+    stack_duplicates = true
 
-[shortcuts]
-    close = ctrl+space
-    close_all = ctrl+shift+space
-    history = ctrl+grave
-    context = ctrl+shift+period
+    sticky_history = false
+
+    padding = 12
+    corner_radius = 6
+
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_current
+    mouse_right_click = close_all
 
 [urgency_low]
-    background = #dfe1e0
-    foreground = "#000000"
-    highlight="#e78a4e"
+    # Solarized Light: base1 on base3
+    background = "#fdf6e3"
+    foreground = "#93a1a1"
+    frame_color = "#eee8d5"
+    timeout = 3
 
 [urgency_normal]
-    background = #dfe1e0
-    foreground = "#000000"
+    # Solarized Light: base00 on base3
+    background = "#fdf6e3"
+    foreground = "#657b83"
+    frame_color = "#93a1a1"
+    timeout = 3
 
 [urgency_critical]
-    background = "#ff9999"
-    foreground = "#000000"
+    # Solarized Light: red on base3
+    background = "#fdf6e3"
+    foreground = "#dc322f"
+    frame_color = "#dc322f"
     timeout = 0
-
-[libpurple_signed]
-    appname = libpurple
-    summary = *igned*
-    urgency = low
-    timeout = 3
-    background = "#ccff33"
-
-[libpurple_came_back]
-    appname = libpurple
-    summary = "*came*"
-    format = ""
-
-[libpurple_went_away]
-    appname = libpurple
-    summary = "*went*"
-    format = ""
-
-[libpurple_says]
-    appname = libpurple
-    summary = *ays*
-    urgency = critical
-    background = "#ccff33"
-
-[libpurple]
-    appname = libpurple
-    urgency = critical
-    background = "#ccff33"
-
-[twitter]
-    appname = Pidgin
-    summary = *twitter.com*
-    urgency = low
-
-[turpial]
-    appname = Turpial
-    urgency = low
-
-[ttytter]
-    summary = "TTYtter*"
-    urgency = low
-
-[dunst-sum]
-    appname = gmailnotify.py
-    summary = "*[dD]unst*"
-    urgency = critical
-
-[dunst-body]
-    appname = gmailnotify.py
-    body = "*[dD]unst*"
-    urgency = critical
-
-[mcabber]
-    appname = notify-send
-    summary = "*jabber*"
-    urgency = critical
-
-[irc]
-    appname = weechat
-    timeout = 0
-    background = "#99FF33"
-    foreground = "#000000"
-
-[XChat]
-    appname = XChat
-    timeout = 0
-    background = "#99FF33"
-    foreground = "#000000"
-
-[test]
-    summary = "*test*"
-    background="#22dd22"

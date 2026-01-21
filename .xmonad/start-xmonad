@@ -1,125 +1,38 @@
 #!/bin/bash
 
-/home/behemoth/bin/org-pull &
+/home/behemoth/bin/switch-dark-theme &
 
-rm -f ~/.xmonad/xmonad.state
+systemctl --user start voxtype
+
+# xue-hanzi anki cards backend
+cd ~/Scratch/js/hanzi-writer/character-server && cargo run &
+
+# proxy autoconfig
+busybox httpd -v -f -p 8910 -c /home/behemoth/Scratch/desktop/proxy_config/.httpd.conf -h /home/behemoth/Scratch/desktop/proxy_config &
+
+# at-spi consumes cpu https://bbs.archlinux.org/viewtopic.php?id=237697
+export NO_AT_BRIDGE=1
+
+#rm -f ~/.xmonad/xmonad.state
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 # work around problem with java applications
 export _JAVA_AWT_WM_NONREPARENTING=1
 
-# TODO: fix it
-# Natural scrolling
-# Invert touchpad scrolling
-# https://askubuntu.com/a/519859/604362
-# xinput set-prop 16 310 -30 -30
-# xinput set-prop 16 306 -30 -30
-# sh -c "sleep 5; xinput set-prop 16 306 -30 -30"
-
-gnome-keyring-daemon --start --components=gpg,pkcs11,secrets,ssh
+# gnome-keyring-daemon --start --components=gpg,pkcs11,secrets,ssh
 
 # separate layout for each window
 kbdd
 
-# sh -c 'dmesg -w | grep --line-buffered "USB HID.*Keyboard" | while read ; do sleep 1s; xmodmap -e "keycode 66 = Return" ; done' &
-sh -c 'dmesg -w | grep --line-buffered "USB HID.*Keyboard" | while read ; do sleep 1s; setxkbmap -option caps:escape; xmodmap -e "keycode 66 = Return"; xmodmap -e "keycode 135 = Alt_L"; xmodmap -e "keycode 180 = Super_L"; xmodmap -e "keycode 166 = Control_L"; xmodmap -e "keycode 94 = Shift_L"; done' &
-
-# sh -c 'dmesg -w | grep --line-buffered "BLUETOOTH HID.*Keyboard" | while read ; do sleep 1s; setxkbmap -option caps:escape; xmodmap -e "keycode 66 = Return"; xmodmap -e "keycode 135 = Alt_L"; xmodmap -e "keycode 180 = Super_L"; xmodmap -e "keycode 166 = Control_L"; xmodmap -e "keycode 94 = Shift_L"; done' &
-
-kmonad-akko() {
-    while true; do
-        DEV_ID=$(grep -B 1 -A 9 "3068V2 BP.*Keyboard" /proc/bus/input/devices | grep -o -E 'event[0-9]+')
-        if [[ "$DEV_ID" == "" ]]; then
-            :
-        else
-            KMONAD_INPUT_DEVICE="/dev/input/$DEV_ID"
-            export KMONAD_INPUT_DEVICE
-
-            envsubst < ~/.kmonad.akko.env > ~/.kmonad.akko.kbd
-
-            setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option 'grp:shifts_toggle,grp_led:scroll,compose:ralt,terminate:ctrl_alt_bksp'
-            ~/.local/bin/kmonad ~/.kmonad.akko.kbd
-        fi
-        sleep 3s
-    done
-}
-
-kmonad-fekker() {
-    while true; do
-        DEV_ID=$(grep -B 1 -A 9 "FEKER Alice-2 Keyboard" /proc/bus/input/devices | grep -o -E 'event[0-9]+')
-        if [[ "$DEV_ID" == "" ]]; then
-            :
-        else
-            KMONAD_INPUT_DEVICE="/dev/input/$DEV_ID"
-            export KMONAD_INPUT_DEVICE
-
-            envsubst < ~/.kmonad.feker.env > ~/.kmonad.feker.kbd
-
-            setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option 'grp:shifts_toggle,grp_led:scroll,compose:ralt,terminate:ctrl_alt_bksp'
-            ~/.local/bin/kmonad ~/.kmonad.feker.kbd
-        fi
-        sleep 3s
-    done
-}
-
-# kmonad-akko &
-# kmonad-fekker &
-# while true; do
-#     setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option 'grp:shifts_toggle,grp_led:scroll,compose:ralt,terminate:ctrl_alt_bksp'
-#     ~/.local/bin/kmonad /home/behemoth/.kmonad.note.kbd
-#     sleep 3s
-# done &
 /home/behemoth/bin/xremap --watch=device,config /home/behemoth/.xremap.yml &
 
-# Notify when bluetooth is ready to connect
-sh -c 'dmesg -w | grep -q --line-buffered "Bluetooth: RFCOMM TTY layer initialized" && notify-send "Bluetooth initialized"' &
-
-# Replace a broken Shift
-# xmodmap -e "keycode 94 = Shift_L"
-
-# add second return key to caps lock
-## Linux 4.19.1-041901-generic #201811041431 SMP Sun Nov 4 14:33:06 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
-## without setxkbmap call caps does 2 things: change capitalization and insert return
-setxkbmap -option caps:escape
-xmodmap -e "keycode 66 = Return"
-
-# Wireless keyboard from virtual machine # xmodmap -e "keycode 94 = Super_L"
-# xmodmap -e "keycode 135 = Alt_L"
-
-# native wireless keyboard
-# xmodmap -e "keycode 180 = Super_L"
-# Right Alt
-# xmodmap -e "keycode 108 = Super_R"
-# xmodmap -e "keycode 166 = Control_L"
-# xmodmap -e "keycode 94  = Shift_L"
-# Right Ctrl
-# xmodmap -e "keycode 105 = Super_R"
-
-# wireless keyboard
-# xmodmap -e "keycode 64  = Super_L"
-# xmodmap -e "keycode 51  = Alt_L"
-
-# remap broken right mouse button to working additional key; configure "scroll emulation" to same key.
-#xinput set-button-map "Logitech Unifying Device. Wireless PID:1028" 1 2 3 4 5 6 7 3 9
-#xinput --set-prop "Logitech Unifying Device. Wireless PID:1028" "Evdev Wheel Emulation" 1
-#xinput --set-prop "Logitech Unifying Device. Wireless PID:1028" "Evdev Wheel Emulation Button" 8
-
-#
 xsetwacom --set "$(xsetwacom --list devices | grep STYLUS | awk '{print $9}')" Rotate half
 
 # configure cursor
 xsetroot -cursor_name left_ptr
 
-# unclutter -idle 20 &
-
-# config display
-
-# dim time https://en.wikipedia.org/wiki/VESA_Display_Power_Management_Signaling#Design
-# xset dpms 150 200 300
-
-# screen locker
-/usr/bin/xscreensaver &
-xset dpms 0 0 0
+# /usr/bin/xscreensaver &
+# xset dpms 0 0 0
 
 if pgrep "redshift" > /dev/null
 then
@@ -127,41 +40,18 @@ then
 fi
 redshift &
 
-#xrandr --output HDMI-0 --mode 1920x1080 --primary --output LVDS --mode 1366x768 --right-of HDMI-0
-#xrandr --output VGA1 --mode 1280x1024 --primary --output LVDS1 --mode 1280x800 --right-of VGA1
-#xrandr --output DP-3 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-2 --off
 xrandr --output DP-3 --off --output DP-1 --off --output eDP-1 --mode 1920x1080 --primary --pos 0x0 --rotate normal --output DP-2 --off
 
 # Set the background image/color
-#xsetroot -solid midnightblue
 feh --bg-scale ~/ra.jpg
 
-# Load X resources
 xrdb -merge ~/.Xresources
 
-# Set up an tray
 trayer --edge top --align right --SetDockType true --SetPartialStrut true \
  --expand true --width 10 --transparent true --tint 0x191970 --height 18 &
 
-# Fire up apps
 if [ -x /usr/bin/nm-applet ] ; then
-   # nm-applet --sm-disable &
    nm-applet --sm-disable &
 fi
 
-# if [ -x /usr/bin/gnome-power-manager ] ; then
-    # sleep 3
-    # gnome-power-manager &
-# fi
-
-# Time tracking utility
-arbtt-capture --sample-rate=10 &
-# sh -c "while true; do /home/behemoth/go/bin/thyme track -o /home/behemoth/thyme.json; sleep 10s; done;" &
-
-# see man xkeyboard-config:
-setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option 'grp:shifts_toggle,grp_led:scroll,compose:ralt,terminate:ctrl_alt_bksp'
-
-#export WINDOW_MANAGER=xmonad
-#exec gnome-session
 xmonad
-#exec gnome-session-xmonad

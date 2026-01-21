@@ -6,11 +6,22 @@ sudo apt install ncal \
 	python3-full \
 	pandoc \
 	upx \
-  fd-find
+  fd-find \
+  imagemagic
+
+sudo apt-get install \
+  xscreensaver \
+  xscreensaver-gl-extra \
+  xscreensaver-data-extra \
+  xscreensaver-screensaver-bsod
 
 sudo apt install calibre \
 	transmission-gtk \
-	vlc
+	vlc \
+	loupe # image viever
+
+sudo apt install virtualbox virtualbox-ext-pack virtualbox-guest-additions-iso
+sudo usermod -aG vboxusers $USER
 
 curl https://github.com/mikefarah/yq/releases/download/v4.44.1/yq_linux_amd64 -o ~/bin/yq && chmod +x $_
 
@@ -28,7 +39,7 @@ sudo sh -c 'echo KERNEL=="uinput", GROUP="input", MODE="0660", OPTIONS+="static_
 sudo sh -c 'echo ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="/bin/chgrp video /sys/class/backlight/%k/brightness"' >> /lib/udev/rules.d/backlight.rules
 sudo sh -c 'echo ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness"' >> /lib/udev/rules.d/backlight.rules
 
-# install numen
+# install numen (voice input)
 sudo apt install -y golang-go scdoc libxkbcommon-dev
 
 mkdir -p ~/Scratch/desktop
@@ -45,6 +56,10 @@ popd
 # install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
+# install Haskell
+sudo apt install build-essential curl libffi-dev libffi8 libgmp-dev libgmp10 libncurses-dev pkg-config
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+
 # Office tools
 # apt install slack installs something else
 sudo snap install slack
@@ -59,6 +74,7 @@ sudo rm microsoft.gpg
 
 sudo apt update && sudo apt install microsoft-edge-stable
 
+# Fix touchpad
 xserver-xorg-input-synaptics
 sudo apt install xserver-xorg-input-synaptics-hwe-18.04
 
@@ -94,6 +110,10 @@ curl https://raw.githubusercontent.com/blendle/kns/master/bin/ktx -o ~/bin/ktx &
 kubectl krew install stern
 
 popd
+
+# yandex compute
+# https://yandex.cloud/en/docs/cli/quickstart#install
+# curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 
 # aws
 
@@ -162,23 +182,55 @@ sudo cp /mnt/home/behemoth/Scratch/python/algo/configs/*/wireguard/vas_phone_red
 # VSCode
 sudo snap install --classic code
 cp -r /mnt/home/behemoth/.config/Code /home/behemoth/.config/Code
+# move extensions https://stackoverflow.com/questions/35773299/how-can-you-export-the-visual-studio-code-extension-list
+# code --list-extensions | xargs -L 1 echo code --install-extension
 
 # Fonts
+fontpath="${XDG_DATA_HOME:-$HOME/}"/.fonts
+mkdir -p $fontpath
+
 # https://askubuntu.com/questions/193072/how-to-use-the-adobe-source-code-pro-font
 mkdir -p /tmp/adodefont
 pushd /tmp/adodefont
 wget -q --show-progress -O source-code-pro.zip https://github.com/adobe-fonts/source-code-pro/archive/2.030R-ro/1.050R-it.zip
 unzip -q source-code-pro.zip -d source-code-pro
-fontpath="${XDG_DATA_HOME:-$HOME/.local/share}"/fonts
-mkdir -p $fontpath
 cp -v source-code-pro/*/OTF/*.otf $fontpath
-fc-cache -f
-rm -rf source-code-pro{,.zip}
-
 popd
+
+# https://www.nerdfonts.com/font-downloads
+mkdir -p /tmp/ubuntumono
+pushd /tmp/ubuntumono
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/UbuntuMono.zip
+unzip -q UbuntuMono.zip -d res
+cp res/*.ttf $fontpath
+popd
+
+mkdir -p /tmp/sourcecodepro
+pushd /tmp/sourcecodepro
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/SourceCodePro.zip
+unzip -q SourceCodePro.zip -d res
+cp res/*.ttf $fontpath
+popd
+
+
+fc-cache -f
 
 # magit
 cargo install git-delta
 
 # Synchthing
 # https://apt.syncthing.net/
+
+# nvm
+# https://github.com/nvm-sh/nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+nvm install node
+
+# Rust command line tools
+cargo install --locked yazi
+cargo install --locked yazi-fm yazi-cli
+cargo install --locked television
+cargo install --locked fd-find
+cargo install --locked bat
+cargo install --locked zoxide                                                                                                 │
+

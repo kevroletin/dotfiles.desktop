@@ -1,0 +1,40 @@
+#!/usr/bin/env nu
+
+def set_light [] {
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+
+    # helix editor
+    echo "inherits = \"solarized_light\"" > /home/behemoth/.config/helix/themes/adaptive.toml
+
+    notify-send "Light theme enabled"
+}
+
+def set_dark [] {
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+
+    # helix editor
+    echo "inherits = \"solarized_dark\"" > /home/behemoth/.config/helix/themes/adaptive.toml
+
+    notify-send "Dark theme enabled"
+}
+
+def "main set" [theme] {
+    if $theme == "light" { set_light } else { set_dark }
+}
+
+def "main toggle" [] {
+    if (gsettings get org.gnome.desktop.interface color-scheme | str contains 'prefer-light') {
+        set_dark
+    } else {
+        set_light
+    }
+}
+
+def main [] {
+    let current_hour = date now | format date "%H" | into int
+    if ($current_hour >= 6 and $current_hour < 18) {
+        set_light
+    } else {
+        set_dark
+    }
+}

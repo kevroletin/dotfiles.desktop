@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sleep 5s
+
+xset -r 78
+setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option 'grp:shifts_toggle,grp_led:scroll,compose:ralt,terminate:ctrl_alt_bksp'
+echo 'Configure xset'
+notify-send 'Configure xset'
