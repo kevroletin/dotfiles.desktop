@@ -27,32 +27,43 @@ import           XMonad.Hooks.EwmhDesktops
 import           Graphics.X11.ExtraTypes.XF86
 import           XMonad.Actions.UpKeys
 import           System.Clipboard (getClipboardString)
-import           System.Directory (doesFileExist, doesDirectoryExist)
+import           System.Directory (doesFileExist, doesDirectoryExist, canonicalizePath)
+import           System.FilePath (addTrailingPathSeparator)
+import qualified Data.Text as T
+
+stripText :: String -> String
+stripText = T.unpack . T.strip . T.pack
 
 dirFromClipboard :: String -> IO String
 dirFromClipboard fallback =
   getClipboardString >>= \case
       Nothing -> pure fallback
-      Just x -> doesDirectoryExist x >>= \case
-                    True -> pure x
-                    False -> pure fallback
+      Just x' -> do let x = stripText x'
+                    doesDirectoryExist x >>= \case
+                      True -> pure x
+                      False -> pure fallback
 
 scratchpads = [
-      NS "quake" "wezterm start --class scratchpad-quake"
+      NS "quake" "alacritty --class scratchpad-quake"
           (appName =? "scratchpad-quake")
           (customFloating $ W.RationalRect (0) (6/10) (1) (4/10))
-      , NS "numen" "wezterm start --class scratchpad-numen --cwd /home/behemoth -e sh -c 'tail -f /tmp/phrases.log & numen --phraselog /tmp/phrases.log'"
-          (appName =? " scratchpad-numen")
-          (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
+      , NS "numen" ("alacritty --class scratchpad-numen --working-directory /home/behemoth -e " ++ numenTailCmd)
+            (appName =? "scratchpad-numen")
+            (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
+      -- , NS "numen" "alacritty --class scratchpad-numen --working-directory /home/behemoth -e sh -c 'echo > /tmp/phrases.log; tail -F /tmp/phrases.log & numen --phraselog /tmp/phrases.log'"
+      --     (appName =? " scratchpad-numen")
+      --     (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
       -- , NS "test" "wezterm start --class scratchpad-test --position 1600,450 "
       --     (appName =? "scratchpad-test")
       --     (customFloating $ W.RationalRect (33/40) (9/20) (3/20) (5/10))
-  ]
+      ]
+  where
+    numenTailCmd = "sh -c 'echo > /tmp/phrases.log; tail -F /tmp/phrases.log & numen --phraselog /tmp/phrases.log'"
 
 quakeAct =
   customRunNamedScratchpadAction
     (\_ -> do x <- liftIO (dirFromClipboard "/home/behemoth")
-              safeSpawn "wezterm" ["start", "--cwd", x, "--class", "scratchpad-quake"])
+              safeSpawn "alacritty" ["--working-directory", x, "--class", "scratchpad-quake"])
     scratchpads
     "quake"
 
@@ -184,8 +195,11 @@ keysToAdd x = [
 
 
   , ((modm .|. shiftMask, xK_Return), do x <- liftIO (dirFromClipboard "/home/behemoth")
-                                         safeSpawn "wezterm" ["start", "--cwd", x])
-  ]
+                                         safeSpawn "alacritty" ["--working-directory", x])
+  ] ++
+  [((m .|. modm, k), windows $ f i)
+      | (i, k) <- zip (workspaces x) [xK_1 ..]
+      , (f, m) <- [(W.view, 0), (W.shift, shiftMask), (copy, shiftMask .|. controlMask)]]
   where
     modm = (modMask x)
 
@@ -255,7 +269,7 @@ main = do
         , focusFollowsMouse = False
         , keys = myKeys
         -- , terminal = "wezterm -name Wezterm -e ~/bin/tshsh zsh shh"
-        , terminal = "wezterm start --class Wezterm"
+        , terminal = "alacritty"
         , startupHook = do -- openObsidian
                            windows $ W.greedyView "work"
                            configureXset
