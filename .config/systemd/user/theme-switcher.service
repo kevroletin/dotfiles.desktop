@@ -1,0 +1,12 @@
+[Unit]
+Description=Desktop Theme Switcher
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.xmonad/theme-switcher
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,37 @@
+[global]
+    font = "UbuntuMono Nerd Font Propo 13"
+    allow_markup = true
+
+    sort = true
+    notification_limit = 5
+    stack_duplicates = true
+
+    sticky_history = false
+
+    padding = 12
+    corner_radius = 6
+
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    # Solarized Light: base1 on base3
+    background = "#fdf6e3"
+    foreground = "#93a1a1"
+    frame_color = "#eee8d5"
+    timeout = 3
+
+[urgency_normal]
+    # Solarized Light: base00 on base3
+    background = "#fdf6e3"
+    foreground = "#657b83"
+    frame_color = "#93a1a1"
+    timeout = 3
+
+[urgency_critical]
+    # Solarized Light: red on base3
+    background = "#fdf6e3"
+    foreground = "#dc322f"
+    frame_color = "#dc322f"
+    timeout = 0

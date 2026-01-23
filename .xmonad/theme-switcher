@@ -1,0 +1,52 @@
+#!/usr/bin/env nu
+
+let HOME = $env.HOME
+
+def set-alacritty-theme [style] {
+  let x = $"($HOME)/.config/alacritty"
+  let template = $'general.import = [ "($x)/themes_git/themes/solarized_($style).toml" ]'
+  $template | save --force $"($x)/theme.toml"
+}
+
+def set-dunst-theme [style] {
+  let x = $"($HOME)/.config/dunst/dunstrc"
+  cp $"($x).($style)" $x
+
+  systemctl --user restart dunst.service | complete
+}
+
+def set-helix-theme [style] {
+  let x = "/home/behemoth/.config/helix/themes/adaptive.toml"
+  $'inherits = "solarized_($style)"' | save --force $x
+}
+
+def set-theme [style] {
+  set-dunst-theme $style
+  set-alacritty-theme $style
+  set-helix-theme $style
+
+  notify-send 'Desktop theme update'
+}
+
+def system-theme [] {
+  if (gsettings get org.gnome.desktop.interface color-scheme | str contains 'dark') {
+    'dark'
+  } else {
+    'light'
+  }
+}
+
+let h = date now | format date "%H" | into int
+if (6 <= $h and $h <= 18) {
+    set-theme 'light'
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+} else {
+    set-theme 'dark'
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+}
+
+gsettings monitor org.gnome.desktop.interface color-scheme
+    | lines
+    | each {|line|
+        system-theme | set-theme $in
+    }
