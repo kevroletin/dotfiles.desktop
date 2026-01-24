@@ -1,0 +1,57 @@
+#!/usr/bin/env nu
+#
+# * watch journalctl for the signs of connecting to Xiaomi 15 wifi hotspot
+# * extract gateways address from the NetworkManager
+# * interpolate proxychains and proxy-autoconfig text configs
+#
+# setup-proxy         -- interpolate templates
+# setup-proxy monitor -- watch journalctl and interpolate templates once we connected to the wifi
+
+let proxy_pac_template = r#'
+function FindProxyForURL(url, host) {
+  if (isPlainHostName(host) || dnsDomainIs(host, ".ru")) {
+    return "DIRECT";
+  }
+  return "SOCKS5 ${IP}:10808; DIRECT";
+}
+'#
+
+let proxychains_template = r#'
+[ProxyList]
+
+socks5 ${IP} 10808
+'#
+
+def expand_templates [gateway_ip] {
+  $proxy_pac_template | str replace '${IP}' $gateway_ip | save -f $"($env.HOME)/Scratch/desktop/proxy_config/proxy.pac"
+  $proxychains_template | str replace '${IP}' $gateway_ip | save -f $"($env.HOME)/.proxychains/proxychains.conf"
+}
+
+def parse_gateway [] {
+  nmcli device show | parse "IP4.GATEWAY:{ip}"
+  | each { get ip | str trim }
+  | where { is-not-empty }
+  | where { not ($in =~ '[^\d.]') }
+  | first
+}
+
+def go [] {
+  parse_gateway | each { |gateway|
+    print $"Gateway: ($gateway)"
+    expand_templates $gateway
+  }
+}
+
+def "main monitor" [] {
+  let pattern = r#'{_}policy: set '{wifi}' ({dev}) as default for IPv4 routing and DNS{_}'#
+  let want_wifi = "Xiaomi 15"
+
+  journalctl -f -u NetworkManager | parse $pattern | each { |x|
+    print $"($x.dev) connected to ($x.wifi)"
+    if ($x.wifi == $want_wifi) {
+      go
+    }
+  }
+}
+
+def main [] { go }

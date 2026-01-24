@@ -1,0 +1,12 @@
+[Unit]
+Description=Interpolate proxy configs
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.xmonad/setup-proxy monitor
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
