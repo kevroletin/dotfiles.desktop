@@ -185,7 +185,7 @@ keysToAdd x = [
   , ((0, xF86XK_AudioLowerVolume), spawn "/home/behemoth/bin/adjust-brightness -")
   , ((0, xF86XK_AudioRaiseVolume), spawn "/home/behemoth/bin/adjust-brightness +")
   -- , ((0, xF86XK_AudioMute), spawn "sleep 0.5s; xset dpms force off")
-  , ((0, xF86XK_AudioMute), spawn "/home/behemoth/bin/switch-dark-theme toggle")
+  , ((0, xF86XK_AudioMute), spawn "~/.xmonad/toggle-theme")
 
   , ((0, xK_Scroll_Lock), voxtypeStart) -- see myUpKeys for the stop action
 
